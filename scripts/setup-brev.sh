@@ -20,6 +20,26 @@ for mode in unrestricted runtime adaptive; do
   .venv/bin/python -m finguard evaluate --mode "$mode" --count 1000 --seed 42 --output "$OUTPUT_DIR/$mode"
 done
 
+.venv/bin/python - "$OUTPUT_DIR" <<'PY'
+import json
+import platform
+import subprocess
+import sys
+from datetime import datetime, timezone
+from pathlib import Path
+
+revision = subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True, text=True, check=True).stdout.strip()
+dirty = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True, check=True).stdout.strip()
+metadata = {"completed_at_utc": datetime.now(timezone.utc).isoformat(), "git_revision": revision,
+            "working_tree_dirty": bool(dirty), "python": platform.python_version(),
+            "os": platform.system(), "kernel": platform.release(), "architecture": platform.machine(),
+            "backend": "virtual_simulation", "seed": 42, "runs_per_mode": 1000,
+            "tests": "passed", "gpu_used": False, "openshell_used": False}
+(Path(sys.argv[1]) / "environment.json").write_text(json.dumps(metadata, indent=2) + "\n")
+PY
+tar -czf "$OUTPUT_DIR.tar.gz" -C "$(dirname "$OUTPUT_DIR")" "$(basename "$OUTPUT_DIR")"
+
 printf '\nFinGuard tests and virtual benchmarks completed. Reports: %s/%s\n' "$PROJECT_ROOT" "$OUTPUT_DIR"
 printf '%s\n' 'No LLM, OpenShell sandbox, or GPU workload was launched.'
+printf 'Share this results bundle: %s/%s.tar.gz\n' "$PROJECT_ROOT" "$OUTPUT_DIR"
 printf '%s\n' 'Optional API: .venv/bin/python -m uvicorn finguard.api:app --host 127.0.0.1 --port 8000'

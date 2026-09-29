@@ -32,6 +32,16 @@ ssh -L 8000:127.0.0.1:8000 YOUR_INSTANCE_SSH_ALIAS
 
 Then open `http://127.0.0.1:8000/docs` on your computer. The synthetic API has no authentication; do not expose it as a public endpoint.
 
+## Share results
+
+After a successful run, the script prints the path to a `.tar.gz` bundle. It contains `environment.json` and the report/trace files for unrestricted, runtime, and adaptive modes. It excludes the repository, original Word document, virtual environment and credentials. Download that bundle through your instance's file interface, or copy it from your computer using the configured SSH alias and the exact remote path printed by the script:
+
+```sh
+scp YOUR_INSTANCE_SSH_ALIAS:/path/printed/by/script.tar.gz .
+```
+
+Attach the bundle to this conversation. If the script fails before it creates the bundle, share the error output instead. The results can support a baseline evaluation, a utility-versus-security analysis and a reproducible methods section, with simulation limitations made explicit.
+
 ## What this validates
 
 This run validates the Python testbed on the remote instance. It does not measure OpenShell containment, model behavior, or GPU performance. See [the OpenShell integration plan](OPENSHELL.md) for that milestone. No instance provisioning or paid-resource creation is performed by the setup script.

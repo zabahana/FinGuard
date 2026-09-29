@@ -56,7 +56,7 @@ Interactive endpoint documentation is at `http://127.0.0.1:8000/docs`. The servi
 - `tests/`: behavioral regression tests.
 - `docs/RESEARCH_PLAN.md`: requirements, experimental design and remaining milestones.
 - `docs/OPENSHELL.md`: real-environment integration requirements.
-- `docs/ci-workflow.yml`: GitHub Actions template. CI is not enabled yet; move this file to `.github/workflows/test.yml` and push with a credential that has workflow permission to enable it.
+- `docs/.github/workflows/test.yml`: GitHub Actions template. CI is not enabled yet; move this file to `.github/workflows/test.yml` at the repository root and push with a credential that has workflow permission to enable it.
 
 ## Interpreting results
 
