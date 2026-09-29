@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "finguard"
+version = "0.1.0"
+description = "Synthetic financial-agent containment and semantic-policy testbed"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+api = ["fastapi>=0.115,<1", "uvicorn>=0.30,<1"]
+
+[project.scripts]
+finguard = "finguard.__main__:main"
+
+[tool.setuptools.packages.find]
+include = ["finguard*"]
