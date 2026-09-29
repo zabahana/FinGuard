@@ -34,6 +34,8 @@ The example agent investigates C10452, identifies a disputed $8,920 transaction 
 
 ## Optional synthetic API
 
+For a remote Linux instance, see [Run on NVIDIA Brev](docs/BREV.md). The setup script runs tests and all three virtual benchmark modes; it does not provision infrastructure.
+
 ```sh
 python3 -m venv .venv
 .venv/bin/python -m pip install -e '.[api]'
