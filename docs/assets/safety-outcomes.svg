@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1110" viewBox="0 0 1200 1110" role="img" aria-labelledby="title description">
+<title id="title">What OpenShell and FinGuard achieved together</title><desc id="description">OpenShell enforced runtime boundaries, FinGuard constrained the investigation workflow, and their integration completed a real-data investigation with independent containment evidence. Results cover a local demonstration, not certification or a comparative safety benchmark.</desc>
+<rect width="1200" height="1110" fill="#fafcf9"/>
+<g font-family="Arial, sans-serif">
+<text x="48" y="54" font-size="17" fill="#246548" font-weight="600">FINGUARD / OBSERVED OUTCOMES</text>
+<text x="48" y="110" font-size="40" fill="#163425" font-weight="700">One investigation. Two layers of control.</text>
+<text x="48" y="151" font-size="23" fill="#617168" font-weight="400">Separate responsibilities, connected by a verifiable execution record.</text>
+<rect x="48" y="190" width="536" height="450" rx="7" fill="#edf5ee" stroke="#cfddd1"/>
+<rect x="616" y="190" width="536" height="450" rx="7" fill="#ffffff" stroke="#cfddd1"/>
+<text x="76" y="233" font-size="16" fill="#246548" font-weight="600">EXTERNAL RUNTIME BOUNDARY</text>
+<text x="76" y="277" font-size="31" fill="#163425" font-weight="700">NVIDIA OpenShell</text>
+<text x="76" y="318" font-size="22" fill="#263e34" font-weight="400">Controls what the process can access.</text>
+<text x="76" y="369" font-size="21" fill="#263e34" font-weight="400">• Read-only evidence; restricted file access</text>
+<text x="76" y="405" font-size="21" fill="#263e34" font-weight="400">• Network destination, method and path rules</text>
+<text x="76" y="441" font-size="21" fill="#263e34" font-weight="400">• Restricted identity and process controls</text>
+<text x="76" y="477" font-size="21" fill="#263e34" font-weight="400">• Native supervisor audit evidence</text>
+<path d="M76 507H556" stroke="#cfddd1"/>
+<text x="76" y="550" font-size="23" fill="#163425" font-weight="700">9 / 9 direct I/O probes matched expectations</text>
+<text x="76" y="589" font-size="20" fill="#263e34" font-weight="400">3 native network denials corroborated blocking</text>
+<text x="76" y="616" font-size="18" fill="#617168" font-weight="400">Probes bypassed the FinGuard Guard and Runner.</text>
+<text x="644" y="233" font-size="16" fill="#246548" font-weight="600">APPLICATION WORKFLOW CONTROLS</text>
+<text x="644" y="277" font-size="31" fill="#163425" font-weight="700">FinGuard Safety Controls</text>
+<text x="644" y="318" font-size="22" fill="#263e34" font-weight="400">Controls which proposed actions execute.</text>
+<text x="644" y="369" font-size="21" fill="#263e34" font-weight="400">• Validate tool names and arguments</text>
+<text x="644" y="405" font-size="21" fill="#263e34" font-weight="400">• Restrict tools to the assigned transaction</text>
+<text x="644" y="441" font-size="21" fill="#263e34" font-weight="400">• Require evidence before case submission</text>
+<text x="644" y="477" font-size="21" fill="#263e34" font-weight="400">• Keep labels out; bound the agent loop</text>
+<path d="M644 507H1124" stroke="#cfddd1"/>
+<text x="644" y="550" font-size="23" fill="#163425" font-weight="700">2 model calls · 4 tool calls · complete</text>
+<text x="644" y="589" font-size="20" fill="#263e34" font-weight="400">Required evidence gathered; simulated note recorded.</text>
+<text x="644" y="616" font-size="18" fill="#617168" font-weight="400">Completion does not certify reasoning quality.</text>
+<path d="M316 640V674H884V640M600 674V696" fill="none" stroke="#246548" stroke-width="2"/>
+<path d="M593 689L600 698L607 689" fill="none" stroke="#246548" stroke-width="2"/>
+<rect x="48" y="709" width="1104" height="206" rx="7" fill="#193f2d"/>
+<text x="76" y="748" font-size="16" fill="#cde4d4" font-weight="600">ACHIEVED TOGETHER</text>
+<text x="76" y="790" font-size="29" fill="#ffffff" font-weight="700">A real-data investigation completed within tested boundaries.</text>
+<text x="76" y="833" font-size="23" fill="#e0eee4" font-weight="400">Application evidence + independent runtime observations + native audit</text>
+<text x="76" y="875" font-size="26" fill="#ffffff" font-weight="700">14 / 14 integration checks passed</text>
+<text x="640" y="875" font-size="18" fill="#e0eee4" font-weight="400">Local software deployment · banking actions simulated</text>
+<text x="48" y="958" font-size="25" fill="#163425" font-weight="600">Takeaway: make useful agent work observable and constrain its execution.</text>
+<text x="48" y="1000" font-size="20" fill="#617168" font-weight="400">No certification, general prompt-injection guarantee, or measured safety uplift versus a baseline.</text>
+<text x="48" y="1034" font-size="19" fill="#617168" font-weight="400">The 14 checks combine evidence above; they are not 14 additional independent attack tests.</text>
+<text x="48" y="1075" font-size="16" fill="#617168" font-weight="400">Source: saved FinGuard reports · verified 2026-10-03T14:02:33.571865+00:00 · OpenShell 0.1.2</text>
+</g></svg>

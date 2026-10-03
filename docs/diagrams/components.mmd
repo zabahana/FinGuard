@@ -1,0 +1,28 @@
+flowchart TB
+    subgraph host[Trusted Mac host]
+      data[ULB historical transactions] --> detector[CPU fraud detector]
+      detector --> export[Export one held-out row and score]
+      model[Ollama and Qwen3 8B on Metal]
+      operator[Operator CLI] --> gateway[OpenShell gateway with mTLS]
+    end
+    subgraph docker[Docker Desktop Linux runtime]
+      supervisor[OpenShell supervisor]
+      subgraph workload[Restricted agent workload]
+        evidence[Read-only evidence without labels]
+        loop[Python tool-calling loop]
+        guard[Argument validation and FinGuard Guard]
+        bank[TransactionBank with transaction scope]
+        output[Simulated case and report]
+        evidence --> bank
+        loop --> guard --> bank --> output
+        bank --> loop
+      end
+      supervisor -. filesystem and network enforcement .-> workload
+    end
+    export -->|Baked into image| evidence
+    gateway -. control plane .-> supervisor
+    loop -->|POST /api/chat through enforced channel| model
+    model -->|Tool-call proposals| loop
+    supervisor --> audit[Native OCSF audit]
+    output --> collect[Operator collection and verification]
+    audit --> collect

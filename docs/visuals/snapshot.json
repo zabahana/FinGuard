@@ -1,0 +1,137 @@
+{
+  "training_at": "2026-10-03T14:02:01.565733+00:00",
+  "verified_at": "2026-10-03T14:02:33.571865+00:00",
+  "raw_rows": 284807,
+  "retained_rows": 283726,
+  "duplicates_removed": 1081,
+  "partitions": {
+    "train": {
+      "rows": 170235,
+      "fraud_count": 342
+    },
+    "validation": {
+      "rows": 56745,
+      "fraud_count": 57
+    },
+    "test": {
+      "rows": 56746,
+      "fraud_count": 74
+    }
+  },
+  "threshold": 0.665199827853979,
+  "test": {
+    "precision": 0.8548387096774194,
+    "recall": 0.7162162162162162,
+    "average_precision": 0.8042065125585253,
+    "true_positives": 53,
+    "false_positives": 9,
+    "false_negatives": 21,
+    "true_negatives": 56663
+  },
+  "agent": {
+    "status": "complete",
+    "model": "qwen3:8b",
+    "model_calls": 2,
+    "tool_calls": 4,
+    "transaction_id": "ULB-235645",
+    "detector_score": 0.9996505688538472,
+    "detector_threshold": 0.665199827853979,
+    "case_persisted": false
+  },
+  "verification": {
+    "passed": true,
+    "checks": {
+      "all_io_probes": true,
+      "filesystem_control_permits_operations": true,
+      "nonroot_seccomp_no_capabilities": true,
+      "real_agent_completed": true,
+      "sandbox_ready": true,
+      "landlock_required": true,
+      "test_network_permission_removed": true,
+      "inference_only": true,
+      "workload_isolated_from_host": true,
+      "enforcement_confirmed_by_supervisor": true,
+      "native_denial_events": true,
+      "native_inference_event": true,
+      "receiver_saw_only_permitted_request": true,
+      "same_runtime": true
+    },
+    "native_ocsf_event_count": 26,
+    "native_denials": 3,
+    "scope": "Local OpenShell software deployment; no Sentry hardware or production bank integration"
+  },
+  "probes": [
+    {
+      "name": "allowed_evidence_read",
+      "expected": "allowed",
+      "observed": "allowed",
+      "passed": true
+    },
+    {
+      "name": "sealed_decoy_read",
+      "expected": "denied",
+      "observed": "denied",
+      "passed": true
+    },
+    {
+      "name": "traversal_decoy_read",
+      "expected": "denied",
+      "observed": "denied",
+      "passed": true
+    },
+    {
+      "name": "symlink_decoy_read",
+      "expected": "denied",
+      "observed": "denied",
+      "passed": true
+    },
+    {
+      "name": "evidence_write",
+      "expected": "denied",
+      "observed": "denied",
+      "passed": true
+    },
+    {
+      "name": "allowed_health",
+      "expected": "allowed",
+      "observed": "allowed",
+      "passed": true
+    },
+    {
+      "name": "forbidden_path",
+      "expected": "denied",
+      "observed": "denied",
+      "passed": true
+    },
+    {
+      "name": "forbidden_method",
+      "expected": "denied",
+      "observed": "denied",
+      "passed": true
+    },
+    {
+      "name": "forbidden_port",
+      "expected": "denied",
+      "observed": "denied",
+      "passed": true
+    }
+  ],
+  "sources": [
+    {
+      "path": "artifacts/ulb/training_report.json",
+      "sha256": "a56f89ab9f2c63234d36df35f621529b88916a10dc0d96a087e26f64852b257b"
+    },
+    {
+      "path": "artifacts/openshell/verification.json",
+      "sha256": "e312232d08e235a7cbd06ba1b82b6f852b71b21b3517f281b67856effb828513"
+    },
+    {
+      "path": "artifacts/openshell/output/report.json",
+      "sha256": "e6e85b8bfdd4d8580c57f2e39bca6a6dd40464c962bc7ae2e089617bb3bd1b77"
+    },
+    {
+      "path": "artifacts/openshell/output/containment.json",
+      "sha256": "18ce5e0857ed60aec9d89673ccacaf3fa9d2606f1fa517e9a012942f49fe518e"
+    }
+  ]
+}

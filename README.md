@@ -6,11 +6,37 @@ Research question: **Can context-aware policies improve financial-agent security
 
 ## Current implementation
 
-This first milestone is a runnable, dependency-free Python simulation. It provides a fictional bank, a deterministic investigation agent, exact action allowlists, a semantic risk engine, 18 curated scenarios, JSON reports, and redacted JSONL action traces. An optional FastAPI service exposes synthetic banking endpoints.
+Explore the [interactive visual guide](docs/visual-guide.html), [Mermaid component and process diagrams](docs/ARCHITECTURE.md), and [Medium article draft](docs/MEDIUM_ARTICLE.md). The visual guide works offline and separates detector metrics, agent outcomes, and runtime verification. See [visual documentation maintenance](docs/VISUALS.md) to refresh its snapshot or export diagrams.
 
-**This is not OpenShell and is not a security boundary.** No attack executes a host command, reads a host secret, or sends network traffic. Simulated traversal, DNS, symlink and process probes exercise the policy model only. Benchmark results cannot substantiate claims about NVIDIA containment or LLM resistance to prompt injection.
+FinGuard includes a dependency-free synthetic banking simulation and a real-data fraud workflow using the ULB/Worldline credit-card dataset. A trained classifier scores held-out transactions, and a local Qwen agent investigates through guarded, label-blind tools. The original fictional bank, deterministic agent, 18 curated security scenarios, and optional synthetic FastAPI service remain available.
+
+For the real dataset, training procedure and model-driven investigation commands, see [Real ULB transactions](docs/ULB.md).
+
+```sh
+.venv/bin/python -m finguard investigate-transaction
+```
+
+This command requires the dataset and trained detector described in that guide; both are already installed on the development Mac. Transaction data is real and anonymized; case submission remains simulated.
+
+**The original Python simulation is not an OS security boundary.** Its virtual attack benchmarks cannot establish runtime containment or LLM resistance to prompt injection. A separate [OpenShell integration](docs/OPENSHELL.md) now runs the real-data agent inside NVIDIA OpenShell 0.1.2 on Docker Desktop, with actual filesystem/network probes and native OCSF audit evidence.
+
+To use the verified OpenShell sandbox already running on this Mac:
+
+```sh
+sh scripts/investigate-openshell.sh
+```
+
+Direct `python -m finguard` commands still run outside OpenShell unless executed through that integration.
 
 ## Run locally
+
+For an interactive operator workspace with real job execution, progress logs, detector charts, containment results, and Mermaid diagrams:
+
+```sh
+.venv/bin/python -m finguard.web
+```
+
+Open **http://127.0.0.1:8766**. See [web UI setup and workflow controls](docs/WEB_UI.md). The console runs trusted host commands; its investigation button invokes the OpenShell integration.
 
 Python 3.10 or newer is sufficient for the CLI and tests. From the repository root:
 
@@ -68,9 +94,53 @@ The semantic rules deliberately trade utility for caution. The profile fixture c
 
 ## Next milestones
 
-1. Integrate a pinned OpenShell release on Linux/Brev and execute real synthetic probes inside its boundary.
-2. Add a local Llama/Qwen tool-calling adapter with task-bound sessions and strict action validation.
+1. Extend the verified local OpenShell integration to a production host with service-side banking authorization and durable audit delivery.
+2. Extend the local Qwen tool-calling adapter with held-out model-driven attack evaluations.
 3. Add PostgreSQL persistence, authenticated API sessions, and auditable human review.
 4. Correlate OCSF telemetry, model traces and GPU measurements, then run held-out ablations.
 
 No cloud resources are provisioned by this repository. All included identities, credentials and account data are fictional.
+
+## Local model on macOS
+
+FinGuard now supports a real tool-calling model through Ollama's loopback API.
+The default is `qwen3:8b` (Q4_K_M, approximately 5.2 GB of weights), a practical
+starting point for the 24 GB Apple Silicon development Mac. Inference uses
+Ollama's Metal backend. This is pretrained inference, not model training.
+
+On this checkout, Ollama and the model are installed under ignored `.local/`.
+To restart the model server in a terminal:
+
+```sh
+sh scripts/serve-model.sh
+```
+
+In another terminal, run a real investigation:
+
+```sh
+.venv/bin/python -m finguard investigate --agent ollama --model qwen3:8b --output artifacts/local-model
+```
+
+For a fresh machine, install [Ollama](https://ollama.com/download/mac), start
+its server with `OLLAMA_NO_CLOUD=1 ollama serve`, then `ollama pull qwen3:8b`.
+The project-local server script is only for this checkout's `.local` installation.
+Select another installed tool-capable, non-thinking-compatible local model using
+`--model MODEL`. The adapter disables thinking and uses an 8192-token context.
+No API key is needed. The client uses only `127.0.0.1:11434` and bypasses proxies.
+
+The model chooses virtual file reads, transaction/risk queries and case submission.
+Each valid action goes through the existing Runner and policy, with one session
+per investigation. Argument validation rejects unknown tools and extra fields.
+Completion requires successful evidence reads and an allowed case submission;
+model prose alone cannot report success. `--max-steps` bounds inference turns
+(default 12, maximum 50), each with at most eight calls and a 180-second timeout.
+The process returns a nonzero status for failed or incomplete investigations.
+
+Reports include the submitted recommendation, model name, inference wall time,
+call counts and generated token count. Known sensitive identifiers are redacted
+from saved recommendations; raw model conversations and tool results are not
+persisted. This is not a general-purpose PII scrubber. Cases remain in memory.
+The HTTP fixture service remains separate; use the CLI for model investigations.
+The existing `evaluate` command still benchmarks deterministic virtual scenarios,
+not LLM prompt-injection resistance. A completed case is a workflow result, not
+an independent assessment of the model's reasoning quality or a real OS sandbox.

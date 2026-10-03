@@ -1,0 +1,16 @@
+flowchart TB
+    setup[Verify pinned binaries and prepare local mTLS] --> build[Build minimal image with no raw labels or host secrets]
+    build --> baseline[Plain Docker control with same UID]
+    baseline --> create[Create sandbox with test policy]
+    create --> audit[Enable native OCSF and observe activation]
+    audit --> probes[Run nine direct I/O probes and process checks]
+    probes --> narrow[Remove test health permission and wait for policy]
+    narrow --> inference[Run real Qwen investigation]
+    inference --> collect[Collect probes, policy, report, receiver and native audit]
+    collect --> gate{All verification checks pass?}
+    gate -->|Yes| ready[Verified local software deployment]
+    gate -->|No| fail[Nonzero exit with evidence retained]
+    ready --> rerun[Repeat investigation in existing sandbox]
+    rerun --> collect
+    note[Commands stop on execution errors; probe outcomes are checked by the final gate]
+    note -.-> gate

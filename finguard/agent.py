@@ -1,4 +1,4 @@
-"""Deterministic investigation agent; an LLM adapter is a separate research milestone."""
+"""Deterministic baseline; the real local model adapter lives in llm.py."""
 from .models import Action, Verdict
 from .runner import Runner
 

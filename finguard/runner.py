@@ -6,10 +6,10 @@ from .policy import Guard
 
 
 class Runner:
-    def __init__(self, mode="adaptive", session=None):
+    def __init__(self, mode="adaptive", session=None, bank=None):
         self.guard = Guard(mode)
         self.session = session or Session()
-        self.bank = Bank()
+        self.bank = bank if bank is not None else Bank()
         self.events = []
 
     def act(self, action):

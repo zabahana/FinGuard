@@ -1,0 +1,27 @@
+sequenceDiagram
+    autonumber
+    participant O as Operator
+    participant A as Agent loop in sandbox
+    participant M as Host Qwen via Ollama
+    participant G as Validation and Guard
+    participant B as TransactionBank
+    O->>A: Run finguard.contained
+    A->>M: POST /api/chat through OpenShell
+    M-->>A: Proposed tool calls
+    loop Required policy, transaction evidence and risk score
+        A->>G: Validate tool and arguments
+        G->>B: Execute allowed action for assigned transaction
+        B-->>A: Evidence without Class label
+    end
+    A->>M: Continue conversation with tool results
+    M-->>A: Propose submit_case
+    A->>G: Check required evidence and action policy
+    alt Evidence present and action allowed
+        G->>B: Append simulated case note in memory
+        B-->>A: Simulated case result
+        A-->>O: Completed report and application events
+    else Missing evidence or policy denial or review
+        G-->>A: Do not execute submission
+        Note over A,M: Retry within limits or finish incomplete
+    end
+    Note over O,B: Conceptual successful flow, tool grouping and model turns can vary

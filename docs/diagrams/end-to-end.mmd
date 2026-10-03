@@ -1,0 +1,19 @@
+flowchart TB
+    raw[Validate source checksum and schema] --> clean[Deduplicate and sort by time]
+    clean --> train[Train on earliest 60 percent]
+    train --> val[Choose threshold on next 20 percent]
+    val --> freeze[Freeze detector and threshold]
+    freeze --> test[Evaluate final 20 percent offline]
+    freeze --> score[Score held-out features without labels]
+    score --> select[Select highest score for demonstration]
+    select --> export[Export one row and score]
+    export --> sandbox[Build and verify OpenShell sandbox]
+    sandbox --> agent[Qwen gathers policy, evidence and score]
+    agent --> gate{Required evidence and allowed action?}
+    gate -->|Yes| note[Record simulated note]
+    gate -->|No| retry[Return denial or review result]
+    retry -->|Within bounded loop| agent
+    retry -->|No completion or error| incomplete[Incomplete or error report]
+    note --> collect[Collect report and native audit]
+    collect --> verify[Evaluate local verification gate]
+    test -. detector metrics only .-> verify

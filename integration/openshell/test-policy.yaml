@@ -1,0 +1,43 @@
+version: 1
+filesystem_policy:
+  include_workdir: false
+  read_only:
+    - /usr
+    - /lib
+    - /lib64
+    - /etc
+    - /opt/finguard
+    - /evidence
+  read_write:
+    - /output
+    - /tmp
+landlock:
+  compatibility: hard_requirement
+process:
+  run_as_user: "1000"
+  run_as_group: "1000"
+network_policies:
+  local_inference:
+    endpoints:
+      - host: host.openshell.internal
+        port: 11434
+        protocol: rest
+        enforcement: enforce
+        rules:
+          - allow:
+              method: POST
+              path: /api/chat
+    binaries:
+      - path: /usr/local/bin/python3.12
+  controlled_health_probe:
+    endpoints:
+      - host: host.openshell.internal
+        port: 18081
+        protocol: rest
+        enforcement: enforce
+        rules:
+          - allow:
+              method: GET
+              path: /health
+    binaries:
+      - path: /usr/local/bin/python3.12

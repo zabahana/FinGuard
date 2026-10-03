@@ -1,0 +1,60 @@
+# Visual documentation and article publishing
+
+Open [the offline visual guide](visual-guide.html) in a browser. It includes selectable component details, four diagram views, detector results, probe outcomes, and source hashes. It is a saved snapshot, not live monitoring. It performs no network requests or model calls.
+
+## Files to edit
+
+- `docs/diagrams/*.mmd` are the canonical Mermaid diagram sources.
+- `docs/visuals/template.html`, `style.css`, and `guide.js` define the interactive guide.
+- `docs/visuals/snapshot.json` is generated from an explicit allowlist of report fields.
+- `docs/ARCHITECTURE.md` is generated and includes fenced Mermaid diagrams for compatible Markdown viewers.
+- `docs/assets/*.svg` and `*.png` are generated diagram exports.
+- `docs/MEDIUM_ARTICLE.md` is the publication draft. It has four Mermaid figures, a combined-outcomes figure, a workspace screenshot, captions, and source links.
+
+## Refresh results and Markdown diagrams
+
+From the repository root, with local training and OpenShell artifacts present:
+
+```sh
+python3 scripts/build-visual-guide.py
+```
+
+The builder fails if required reports are missing. It includes only selected aggregate metrics, the demonstration ID and score, probe names and outcomes, verification checks, timestamps, and source hashes. It excludes raw transaction rows, model conversations, generated notes, credentials, and native logs. Generated outputs can be committed without committing ignored training artifacts. The article is editorial prose: review its numbers when refreshing the snapshot.
+
+## Render SVG and PNG diagrams
+
+Rendering is a build-time step. Reading the guide needs no Node installation or CDN. The renderer uses a pinned Mermaid 11.12.0 browser bundle, `playwright-core`, and an installed Chrome. With Node and npm available:
+
+```sh
+mkdir -p .local/docs-tools
+curl --fail --location https://cdn.jsdelivr.net/npm/mermaid@11.12.0/dist/mermaid.min.js \
+  -o .local/docs-tools/mermaid-11.12.0.min.js
+npm install --prefix .local/docs-tools --save-exact playwright-core@1.62.1
+NODE_PATH="$PWD/.local/docs-tools/node_modules" node scripts/render-diagrams.cjs \
+  .local/docs-tools/mermaid-11.12.0.min.js
+python3 scripts/build-visual-guide.py
+```
+
+The default browser path is Chrome on macOS. Set `CHROME_PATH` to another installed Chrome executable if needed. The renderer blocks HTTP and HTTPS requests while rendering. A Mermaid syntax error fails the command. It produces PNGs at 2× device resolution and SVGs that can be enlarged without losing detail. Sources use Mermaid 11 syntax; render exports are supplied for viewers that do not support Mermaid.
+
+To preview over HTTP, serve **only the docs directory**, never the whole checkout with its ignored local configuration:
+
+```sh
+python3 -m http.server 8765 --bind 127.0.0.1 --directory docs
+```
+
+Then open `http://127.0.0.1:8765/visual-guide.html`. Implementation links work when opening the guide directly from the checkout; a docs-only HTTP server intentionally does not expose Python source paths outside its root.
+
+## Prepare the Medium draft
+
+The article is written for engineers building tool-using financial agents. It is a draft for publication, not a published Medium post.
+
+Open [the publication HTML](MEDIUM_ARTICLE.html) for a typeset version with all six images embedded, article selection for copying, and print styling. It works offline as a single file. The Markdown remains the editable source. Rebuild the HTML using `node scripts/render-medium-article.cjs` with the `marked` package installed (or exposed through `NODE_PATH`).
+
+Copy the article body into the Medium editor, retaining headings and source links. Upload the six PNGs from `docs/assets/` in the positions indicated by the Markdown images, and paste each caption below its figure. Use the included image descriptions as alt text. The process figures are best opened at full size; editable Mermaid sources and SVGs are also available.
+
+Suggested tags: Artificial Intelligence, Machine Learning, Cybersecurity, Fintech, Open Source.
+
+The reported experiment is the snapshot dated October 3, 2026. Before publishing a later revision, align the article with the refreshed reports. Keep the distinction between the local OpenShell software integration and the full NVIDIA platform, and retain the statement that banking actions are simulated. The demo invitation uses the supplied contact email, zga5029@psu.edu.
+
+The combined-outcomes figure is generated from the saved article snapshot with `node scripts/render-safety-outcomes.cjs` (requires `sharp`). It separates direct observations from broader claims and exports SVG plus PNG. Rebuild the article HTML afterward.

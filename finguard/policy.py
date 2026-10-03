@@ -8,6 +8,16 @@ class RuntimePolicy:
     def evaluate(self, action, session):
         customer = session.task.customer_id
         allowed = False
+        if session.task.purpose == "ulb_transaction_review":
+            allowed = (action.kind == "read" and action.method == "GET" and action.target ==
+                       "/data/policies/fraud/transaction-review.txt") or (
+                action.kind == "api" and action.customer_id == customer and
+                (action.method, action.target) in {
+                    ("GET", "/api/transaction-evidence"), ("GET", "/api/risk-score"),
+                    ("POST", "/api/case-management")})
+            return Decision(Verdict.ALLOW if allowed else Verdict.DENY,
+                            "Transaction scope allowlist" if allowed else "Outside transaction scope",
+                            "runtime_simulation", 0.0 if allowed else 1.0)
         if action.kind == "read":
             # Exact virtual paths deny traversal, symlink aliases and sibling customers.
             allowed = action.method == "GET" and action.target in {

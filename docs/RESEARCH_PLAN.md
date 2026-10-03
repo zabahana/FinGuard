@@ -2,7 +2,7 @@
 
 ## Source review
 
-The saved FinGuard document proposes four levels: deterministic containment validation, six adversarial attack families, semantic policy-gap experiments, and an adaptive policy layer. The implementation begins with a reproducible local experiment harness. The proposed Brev/OpenShell/GPU stack remains an integration milestone, not a completed or measured component.
+The saved FinGuard document proposes four levels: deterministic containment validation, six adversarial attack families, semantic policy-gap experiments, and an adaptive policy layer. The implementation includes the original local simulation, Qwen inference on Apple Silicon, a real ULB fraud detector, and a verified OpenShell 0.1.2 Docker deployment with bounded real I/O probes. Brev deployment, Sentry hardware and comprehensive agent-security evaluation remain future work. See OPENSHELL.md for the exact verified boundary and remaining limits.
 
 The document leaves model/version, cloud provisioning, database schema, policy granularity, approval authority, scenario ground truth and statistical protocol unspecified. Initial decisions are Python 3.10+, virtual fixtures, deterministic actions, task scope C10452, and three comparison modes. SQLite/PostgreSQL persistence and an LLM are not needed for this first harness milestone; PostgreSQL remains the target service store.
 
