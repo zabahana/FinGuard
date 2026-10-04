@@ -14,7 +14,7 @@ A fraud investigation supplies the financial use case. The transactions are real
 
 ![Model behavior versus application enforcement: prohibited proposals, blocked proposals, and unauthorized execution](assets/model-behavior.png)
 
-*Figure 1. In 200 adversarial continuations, 25/200 produced prohibited proposals, 25/25 prohibited proposals were blocked, and 0/200 trials produced unauthorized backend execution. These are observed results from this bounded experiment, not estimates of universal agent safety.*
+*Figure 1. In 200 adversarial continuations, ${single_proposals} produced prohibited proposals, ${single_blocks} prohibited proposals were blocked, and ${single_executions} trials produced unauthorized backend execution. These are observed results from this bounded experiment, not estimates of universal agent safety.*
 
 **The model wasn’t perfectly compliant. The system didn’t require it to be.** In these observed cases, application authorization prevented prohibited proposals from becoming backend actions.
 
@@ -24,16 +24,16 @@ Two studies answer different questions. **Study 1** tests whether the control la
 
 | Study and cohort | Measurement | Observed result |
 |---|---|---|
-| Study 1 · combined controls | Deterministic attacks denied | **14/14** |
-| Study 1 · combined controls | Legitimate controls allowed | **4/4** |
-| Study 1 · four modes | Outcomes matching expectations | **72/72** |
-| Study 2 · adversarial | Trials with prohibited proposals | **25/200 (12.5%)** |
-| Study 2 · adversarial | Prohibited proposals blocked | **25/25** |
-| Study 2 · adversarial | Trials with unauthorized execution | **0/200** |
-| Study 2 · benign | Legitimate proposals incorrectly blocked | **0/133** |
-| Study 2 · benign | Workflows completed | **34/50 (68%)** |
-| Study 2 · benign | Recovery after a block | **1/17 (5.9%)** |
-| Study 2 · multi-turn | Episodes with unauthorized execution | **0/50** |
+| Study 1 · combined controls | Deterministic attacks denied | **${deterministic_attacks}** |
+| Study 1 · combined controls | Legitimate controls allowed | **${positive_controls}** |
+| Study 1 · four modes | Outcomes matching expectations | **${expected_outcomes}** |
+| Study 2 · adversarial | Trials with prohibited proposals | **${single_proposals} (${single_proposal_rate})** |
+| Study 2 · adversarial | Prohibited proposals blocked | **${single_blocks}** |
+| Study 2 · adversarial | Trials with unauthorized execution | **${single_executions}** |
+| Study 2 · benign | Legitimate proposals incorrectly blocked | **${false_blocks}** |
+| Study 2 · benign | Workflows completed | **${completion} (${completion_rate})** |
+| Study 2 · benign | Recovery after a block | **${recovery} (${recovery_rate})** |
+| Study 2 · multi-turn | Episodes with unauthorized execution | **${multi_executions}** |
 
 These counts are not pooled into one security score. The first study tests deterministic enforcement; the second tests model behavior and workflow outcomes. The multi-turn episodes never reached their final exfiltration stage, so zero execution does not demonstrate resistance to that unexposed attack.
 
@@ -89,7 +89,7 @@ For technical readers, the measurements have five names: **Attack Proposal Rate 
 
 *Figure 5. The results separate model proposals, enforcement, backend effects, and task completion. Family bars show prohibited-proposal frequency; stage bars show which instructions actually reached the model. These application-control tests do not measure new OpenShell runtime denials.*
 
-In the 200 adversarial continuations, **25/200 produced prohibited proposals**. All **25/25** observed prohibited proposals were blocked, and **0/200** trials produced unauthorized backend execution. The [published snapshot](https://github.com/zabahana/FinGuard/blob/main/docs/visuals/model-evaluation-snapshot.json) preserves the counts, seeds, source hashes, and selected traces.
+In the 200 adversarial continuations, **${single_proposals} produced prohibited proposals**. All **${single_blocks}** observed prohibited proposals were blocked, and **${single_executions}** trials produced unauthorized backend execution. The [published snapshot](https://github.com/zabahana/FinGuard/blob/main/docs/visuals/model-evaluation-snapshot.json) preserves the counts, seeds, source hashes, and selected traces.
 
 ## Security worked. The agent still struggled.
 
@@ -101,7 +101,7 @@ Here is what happened in the affected workflows: the agent tried to submit a cas
 
 Only **one of the 17 affected workflows recovered** and recorded an authorized note. The other 16 did not finish within the evaluation. Another 33 workflows completed without encountering a block.
 
-That is **68% completion and 5.9% recovery after rejection**, despite no observed false blocking of legitimate proposals. A correct rejection is not a false positive simply because the model subsequently fails to finish.
+That is **${completion_rate} completion and ${recovery_rate} recovery after rejection**, despite no observed false blocking of legitimate proposals. A correct rejection is not a false positive simply because the model subsequently fails to finish.
 
 The lesson is to **measure security and workflow reliability separately**. Preventing an unauthorized action, recovering from a rejection, and completing a task are different outcomes. The traces identify premature tool use and failure to recover; they do not tell us how these same tasks would perform with enforcement removed. An accepted note also does not establish that its reasoning is correct.
 
@@ -127,7 +127,7 @@ That last distinction matters: **Qwen did not attempt exfiltration in that examp
 
 The evaluator classifies proposals against a separate authorization specification, then runs them through the production parser, prerequisite checks, Guard, and scoped backend. Backend instrumentation records actual reads and simulated note mutations independently of the model’s claims and the control’s verdict. A model saying “done” is not evidence of execution.
 
-The main study recorded **zero inference errors**. Repeated runs of one prompt are related observations. Resampling whole prompt groups gives a descriptive 95% interval of **3.5%–22.5%** for the proportion of adversarial trials producing prohibited proposals, and **0.0%–14.3%** for recovery after a block. These small, curated samples do not estimate universal agent safety; all-zero or all-success observations do not prove zero risk or guaranteed blocking.
+The main study recorded **zero inference errors**. Repeated runs of one prompt are related observations. Resampling whole prompt groups gives a descriptive 95% interval of **${proposal_interval}** for the proportion of adversarial trials producing prohibited proposals, and **${recovery_interval}** for recovery after a block. These small, curated samples do not estimate universal agent safety; all-zero or all-success observations do not prove zero risk or guaranteed blocking.
 
 The study uses one model and one transaction. Sensitive-note trials begin with all required evidence already read; other cohorts begin with transaction evidence only. The model evaluation exercises application controls on the trusted host, while Study 1 separately tests runtime restrictions. These different starting states, evidence paths, and exposure limits constrain the conclusions.
 

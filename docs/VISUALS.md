@@ -49,9 +49,9 @@ Then open `http://127.0.0.1:8765/visual-guide.html`. Implementation links work w
 
 The article is written for engineers building tool-using financial agents. It is a draft for publication, not a published Medium post.
 
-Open [the publication HTML](MEDIUM_ARTICLE.html) for a typeset version with all twelve images embedded, article selection for copying, and print styling. It works offline as a single file. The Markdown remains the editable source. Rebuild the HTML using `node scripts/render-medium-article.cjs` with the `marked` package installed (or exposed through `NODE_PATH`).
+Open [the publication HTML](MEDIUM_ARTICLE.html) for a typeset version with all seven images embedded, article selection for copying, and print styling. It works offline as a single file. Edit `MEDIUM_ARTICLE.template.md` for the Medium narrative, then run `scripts/update-model-evaluation-article.py` to render the Markdown from the saved study. The updater requires editorial review when the selected run changes. Rebuild the HTML using `node scripts/render-medium-article.cjs` with the `marked` package installed (or exposed through `NODE_PATH`).
 
-Copy the article body into the Medium editor, retaining headings and source links. Upload the twelve PNGs from `docs/assets/` in the positions indicated by the Markdown images, and paste each caption below its figure. Use the included image descriptions as alt text. The process figures are best opened at full size; editable Mermaid sources and SVGs are also available.
+Copy the article body into the Medium editor, retaining headings and source links. Upload the seven PNGs from `docs/assets/` in the positions indicated by the Markdown images, and paste each caption below its figure. Use the included image descriptions as alt text. The process figures are best opened at full size; editable Mermaid sources and SVGs are also available.
 
 Suggested tags: Artificial Intelligence, Machine Learning, Cybersecurity, Fintech, Open Source.
 
