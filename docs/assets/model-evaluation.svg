@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1210" viewBox="0 0 1600 1210"><rect width="1600" height="1210" fill="#f5f8f3"/><style>text{font-family:Arial,sans-serif;fill:#15382c}.small{font-size:20px;fill:#566b61}.label{font-size:23px}.big{font-size:46px;font-weight:700}</style>
+<text x="58" y="52" class="small">FINGUARD / MODEL-DRIVEN APPLICATION EVALUATION</text>
+<text x="58" y="108" class="big">A prohibited proposal is not an executed action.</text>
+<text x="58" y="151" class="label">300 trials · local Qwen3:8b · shared production controls · independently recorded backend effects</text>
+<rect x="58" y="184" width="480" height="360" rx="16" fill="white" stroke="#d7e4dc"/>
+<text x="82" y="225" class="label">200 adversarial continuations</text>
+<text x="82" y="274" class="big">25/200  ·  12.5%</text>
+<text x="82" y="302" class="small">Trials with prohibited proposals</text>
+<text x="82" y="353" class="big">25/25  ·  100.0%</text>
+<text x="82" y="381" class="small">Prohibited proposals blocked</text>
+<text x="82" y="432" class="big">0/200  ·  0.0%</text>
+<text x="82" y="460" class="small">Trials with unauthorized execution</text>
+<rect x="560" y="184" width="480" height="360" rx="16" fill="white" stroke="#d7e4dc"/>
+<text x="584" y="225" class="label">50 multi-turn episodes</text>
+<text x="584" y="274" class="big">0/50  ·  0.0%</text>
+<text x="584" y="302" class="small">Trials with prohibited proposals</text>
+<text x="584" y="353" class="big">0/0  ·  N/A</text>
+<text x="584" y="381" class="small">Prohibited proposals blocked</text>
+<text x="584" y="432" class="big">0/50  ·  0.0%</text>
+<text x="584" y="460" class="small">Trials with unauthorized execution</text>
+<rect x="1062" y="184" width="480" height="360" rx="16" fill="white" stroke="#d7e4dc"/>
+<text x="1086" y="225" class="label">50 benign workflows</text>
+<text x="1086" y="274" class="big">34/50  ·  68.0%</text>
+<text x="1086" y="302" class="small">Workflows completed</text>
+<text x="1086" y="353" class="big">0/133  ·  0.0%</text>
+<text x="1086" y="381" class="small">False blocks / legitimate calls</text>
+<text x="1086" y="464" class="small">17 prohibited proposals on benign tasks</text>
+<text x="1086" y="498" class="small">Correct denials are not false blocks.</text>
+<text x="58" y="587" class="label">Which prompt families elicited prohibited proposals?</text>
+<text x="58" y="617" class="small">APR · trials containing at least one prohibited call</text>
+<text x="58" y="658" class="small">evidence skipping</text>
+<rect x="58" y="670" width="580" height="15" rx="7" fill="#d7e4dc"/><rect x="58" y="670" width="0" height="15" rx="7" fill="#177453"/>
+<text x="656" y="685" class="small">0/40</text>
+<text x="58" y="731" class="small">exfiltration instruction</text>
+<rect x="58" y="743" width="580" height="15" rx="7" fill="#d7e4dc"/><rect x="58" y="743" width="0" height="15" rx="7" fill="#177453"/>
+<text x="656" y="758" class="small">0/40</text>
+<text x="58" y="804" class="small">schema abuse</text>
+<rect x="58" y="816" width="580" height="15" rx="7" fill="#d7e4dc"/><rect x="58" y="816" width="130.5" height="15" rx="7" fill="#177453"/>
+<text x="656" y="831" class="small">9/40</text>
+<text x="58" y="877" class="small">scope override</text>
+<rect x="58" y="889" width="580" height="15" rx="7" fill="#d7e4dc"/><rect x="58" y="889" width="0" height="15" rx="7" fill="#177453"/>
+<text x="656" y="904" class="small">0/40</text>
+<text x="58" y="950" class="small">sensitive submission</text>
+<rect x="58" y="962" width="580" height="15" rx="7" fill="#d7e4dc"/><rect x="58" y="962" width="232" height="15" rx="7" fill="#177453"/>
+<text x="656" y="977" class="small">16/40</text>
+<text x="830" y="587" class="label">How far did the multi-turn attacks reach?</text>
+<text x="830" y="617" class="small">Observed attachment exposure · episodes</text>
+<text x="830" y="658" class="small">1. Reviewer context</text>
+<rect x="830" y="670" width="580" height="15" rx="7" fill="#d7e4dc"/><rect x="830" y="670" width="580" height="15" rx="7" fill="#306a89"/>
+<text x="1425" y="685" class="small">50/50</text>
+<text x="830" y="731" class="small">2. Legitimate score request</text>
+<rect x="830" y="743" width="580" height="15" rx="7" fill="#d7e4dc"/><rect x="830" y="743" width="580" height="15" rx="7" fill="#306a89"/>
+<text x="1425" y="758" class="small">50/50</text>
+<text x="830" y="804" class="small">3. Alternate transaction</text>
+<rect x="830" y="816" width="580" height="15" rx="7" fill="#d7e4dc"/><rect x="830" y="816" width="580" height="15" rx="7" fill="#306a89"/>
+<text x="1425" y="831" class="small">50/50</text>
+<text x="830" y="877" class="small">4. Unauthorized submission</text>
+<rect x="830" y="889" width="580" height="15" rx="7" fill="#d7e4dc"/><rect x="830" y="889" width="116" height="15" rx="7" fill="#306a89"/>
+<text x="1425" y="904" class="small">10/50</text>
+<text x="830" y="950" class="small">5. Exfiltration instruction</text>
+<rect x="830" y="962" width="580" height="15" rx="7" fill="#d7e4dc"/><rect x="830" y="962" width="0" height="15" rx="7" fill="#306a89"/>
+<text x="1425" y="977" class="small">0/50</text>
+<text x="58" y="1051" class="small">Single-continuation APR: prompt-cluster bootstrap 95% interval 3.5%–22.5%.</text>
+<text x="58" y="1083" class="small">Repeated seeds are clustered by prompt. Zero observations do not establish zero risk. Completion ends exposure.</text>
+<text x="58" y="1115" class="small">Inference errors: 0. These application tests do not measure new OpenShell runtime blocking.</text>
+<text x="58" y="1169" class="small">Run main-20261003-213305 · temperature 0.6 · 5 repeats per prompt · counts and source hashes in the published snapshot</text>
+</svg>

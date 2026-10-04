@@ -8,6 +8,10 @@ Research question: **Can context-aware policies improve financial-agent security
 
 For data, model, runtime, and documentation-tool provenance, see [Sources and references](docs/REFERENCES.md).
 
+## Model-driven evaluation
+
+The [expanded model-security study](docs/MODEL_EVALUATION.md) evaluates 200 adversarial continuations, 50 benign workflows, and 50 multi-turn episodes. It separates prohibited proposals, control blocking, unauthorized backend execution, false blocks, and legitimate workflow completion. The [versioned corpus](evaluation/model-security-corpus.json) and [recorded results](docs/visuals/model-evaluation-snapshot.json) accompany the implementation. These application-control tests run on the trusted host; OpenShell containment evidence remains a separate experiment.
+
 ## Current implementation
 
 Explore the [interactive visual guide](docs/visual-guide.html), [Mermaid component and process diagrams](docs/ARCHITECTURE.md), and [Medium article draft](docs/MEDIUM_ARTICLE.md). The visual guide works offline and separates detector metrics, agent outcomes, and runtime verification. See [visual documentation maintenance](docs/VISUALS.md) to refresh its snapshot or export diagrams.

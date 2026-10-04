@@ -67,6 +67,20 @@ class JobFailureTests(unittest.TestCase):
         self.assertLessEqual(len(name), 19)
         self.assertRegex(name, r"^[a-z][a-z0-9-]+$")
 
+    def test_model_evaluation_failure_keeps_previous_report(self):
+        with tempfile.TemporaryDirectory() as temp, patch("finguard.web.ROOT", Path(temp)):
+            manager=JobManager()
+            manager.result={"model_eval":{"run_id":"previous"},"agent":{"status":"complete"}}
+            previous=json.loads(json.dumps(manager.result))
+            job={"id":"evaluation-test","action":"model_eval","status":"running","steps":[],"logs":[],
+                 "started_at":"now","finished_at":None,"sandbox":None,"error":None}
+            with patch.object(manager,"command",side_effect=RuntimeError("model unavailable")) as command:
+                manager.run(job)
+            self.assertEqual(job["status"],"failed")
+            self.assertEqual(manager.result,previous)
+            self.assertIn("finguard.model_eval",command.call_args.args[1])
+            self.assertEqual(command.call_count,1)
+
     def test_failure_preserves_published_results_and_is_recorded(self):
         with tempfile.TemporaryDirectory() as temp, patch("finguard.web.ROOT", Path(temp)):
             manager = JobManager()

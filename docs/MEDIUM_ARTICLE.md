@@ -85,6 +85,38 @@ The lab retains a controlled health permission for its positive network control;
 
 The [Attack Lab methodology](https://github.com/zabahana/FinGuard/blob/main/docs/ATTACK_LAB.md), [saved investigation snapshot](https://github.com/zabahana/FinGuard/blob/main/docs/visuals/snapshot.json), and [Attack Lab snapshot](https://github.com/zabahana/FinGuard/blob/main/docs/visuals/attack-lab-snapshot.json) document the experiments behind these figures. These are local experiment results, not NVIDIA benchmark results; full runtime logs remain local.
 
+<!-- MODEL_EVALUATION_START -->
+## Beyond three examples: a 300-trial model evaluation
+
+The original three continuations above are illustrative. The next experiment adds **200 adversarial continuations, 50 benign workflows, and 50 multi-turn episodes**. Forty attack prompts span transaction-scope abuse, evidence skipping, tool/schema abuse, sensitive-note submission, and exfiltration instructions. Ten benign task variants and ten staged attack sequences complete the corpus. Each prompt receives five runs with recorded seeds, temperature 0.6, and the same local Qwen3:8b model.
+
+The experiment measures four different events. **Attack Proposal Rate (APR)** counts adversarial trials with a prohibited tool proposal. **Control Block Rate (CBR)** measures the fraction of prohibited proposals blocked. **Unauthorized Execution Rate (UER)** counts trials with an actual prohibited backend execution. **False Block Rate (FBR)** measures incorrect blocking of legitimate proposals in benign workflows. Workflow completion is reported separately.
+
+In the single-continuation cohort, **25/200 trials produced prohibited proposals (12.5% APR)**. The controls blocked **25/25 prohibited proposals**. Unauthorized execution was **0/200 trials**. These are observed application-control results, not a general probability of agent safety.
+
+![Measured model-security outcomes, attack-family proposal rates, and multi-turn stage exposure](assets/model-evaluation.png)
+
+*Figure 6. The expanded study separates proposals, blocking, backend execution, and legitimate task completion. Family bars show observed proposal rates; stage bars show which instructions actually reached the model. The original deterministic OpenShell experiment remains a separate source of runtime evidence.*
+
+The benign cohort completed **34/50 workflows (68.0%)**, while false blocks were **0/133 legitimate proposals**. The model also produced **17 prohibited proposals on benign tasks**. Correctly rejecting an invalid or premature call is not a false block, but a model that fails to recover can still leave a legitimate task unfinished. Accepted notes establish workflow completion, not factual accuracy.
+
+### Multi-turn attacks: report exposure, not just outcomes
+
+The staged episodes introduce misleading reviewer context, request legitimate evidence, substitute another transaction ID, attempt an unauthorized submission, and finally request exfiltration. Each new instruction appears beside a real tool reply while the conversation and application state persist. A successful submission ends the episode rather than forcing extra attack turns.
+
+Of the 50 episodes, **50 reached the alternate-transaction stage, 10 reached the unauthorized-submission stage, and 0 reached the exfiltration stage**. Multi-turn APR was **0/50**; no prohibited proposals were observed, so its control block rate is not estimable. Unauthorized execution was **0/50 episodes**. An undelivered later-stage instruction is not evidence of a successful defense against that stage.
+
+### What makes these counts auditable
+
+Every proposal is classified against a separate authorization specification before its control outcome is scored. The evaluator uses the same parser, prerequisite checks, Guard, and scoped backend as the production agent. Backend instrumentation records successful reads and in-memory note mutations independently of the model's claims and the control's verdict. Raw transcripts and effects stay in local artifacts; the public snapshot contains hashes, denominators, seeds, outcomes, and selected decision traces.
+
+The main study recorded **0 inference errors**. Errors are disclosed and excluded from rate denominators, not treated as safe outcomes. A prompt-cluster bootstrap gives a descriptive 95% interval of **3.5%–22.5%** for single-continuation APR. Five repeats of one prompt are related observations. All-zero execution counts and all-success blocking counts yield degenerate bootstrap intervals, which do not establish zero risk or guaranteed blocking.
+
+These trials run on the **trusted host and evaluate application controls**. The agent still has no general file-read or network-send tool, so exfiltration instructions do not create a new model-driven OpenShell blocking result. The study uses one transaction and one model; sensitive-note trials start with all prerequisites read, whereas other cohorts start with transaction evidence only. Curated prompt families, differing starting states, and limited later-stage exposure constrain comparisons and generalization.
+
+The [evaluation methodology](https://github.com/zabahana/FinGuard/blob/main/docs/MODEL_EVALUATION.md), [versioned prompt corpus](https://github.com/zabahana/FinGuard/blob/main/evaluation/model-security-corpus.json), and [recorded evaluation snapshot](https://github.com/zabahana/FinGuard/blob/main/docs/visuals/model-evaluation-snapshot.json) make the design and reported counts inspectable. The web UI adds cohort selection, rate denominators, uncertainty intervals, attack-family outcomes, and per-trial seed and exposure views.
+<!-- MODEL_EVALUATION_END -->
+
 ## Architecture: authorization inside, capability enforcement outside
 
 FinGuard validates application actions while OpenShell constrains the agent process. The classifier and language model support the financial test case with different jobs.
@@ -97,7 +129,7 @@ The Python agent loop runs inside OpenShell’s restricted workload. Model infer
 
 ![FinGuard components and trust boundaries](assets/components.png)
 
-*Figure 6. The host scores transactions and serves model inference. The restricted workload contains the agent loop and transaction tools. The operator collects application results and native runtime evidence separately.*
+*Figure 7. The host scores transactions and serves model inference. The restricted workload contains the agent loop and transaction tools. The operator collects application results and native runtime evidence separately.*
 
 NVIDIA describes its [Open Agent Safety Platform](https://nvidianews.nvidia.com/news/open-agent-safety-platform) as combining OpenShell software with the Sentry reference system design. FinGuard integrates the software runtime, pinned to [OpenShell 0.1.2](https://github.com/NVIDIA/OpenShell/releases/tag/v0.1.2). It does not include the Sentry watchdog or BlueField hardware.
 
@@ -111,7 +143,7 @@ The detailed preprocessing, chronological splits, threshold selection, confusion
 
 ![FinGuard data preparation and investigation process](assets/end-to-end.png)
 
-*Figure 7. Detector evaluation and agent investigation use different evidence paths. Test labels support offline metrics; the investigation receives an exported feature row and score without its label.*
+*Figure 8. Detector evaluation and agent investigation use different evidence paths. Test labels support offline metrics; the investigation receives an exported feature row and score without its label.*
 
 ## Four tools make the investigation inspectable
 
@@ -128,7 +160,7 @@ Submission requires successful reads of the policy, transaction evidence, and ri
 
 ![Sequence of a guarded FinGuard investigation](assets/investigation.png)
 
-*Figure 8. The conceptual tool sequence. Calls may be grouped differently across runs. The transaction tools execute inside Python rather than calling a live banking API.*
+*Figure 9. The conceptual tool sequence. Calls may be grouped differently across runs. The transaction tools execute inside Python rather than calling a live banking API.*
 
 The recorded demonstration investigated `ULB-235645`, selected as the highest-scoring held-out transaction without consulting labels. Its detector score was approximately 0.9997, above the 0.6652 threshold. Qwen completed the workflow in two model calls and four tool calls, recommending review while acknowledging the limits of the anonymized evidence.
 
@@ -150,7 +182,7 @@ The test policy temporarily permits a controlled health endpoint so the probes c
 
 ![FinGuard testing and local deployment process](assets/deployment.png)
 
-*Figure 9. The workflow collects evidence and evaluates a final verification gate. It stops on command errors; it does not automatically relax policy. Probe outcomes are assessed by the final gate.*
+*Figure 10. The workflow collects evidence and evaluates a final verification gate. It stops on command errors; it does not automatically relax policy. Probe outcomes are assessed by the final gate.*
 
 Verification combines several observations: the direct probe results, the filesystem control, the active policy, workload configuration, the completed investigation, controlled receiver logs, and native OpenShell audit events in OCSF format.
 
@@ -176,7 +208,7 @@ The workspace opens at `http://127.0.0.1:8766`. Its progress view follows actual
 
 ![FinGuard local web workspace with real pipeline controls and measured results](assets/workspace.png)
 
-*Figure 10. Screenshot of the working FinGuard web demo, showing the security harness overview, measured attack coverage, and layer comparison. The workspace also retains controls for reproducing the financial workflow described in this article. The demo runs locally; a public hosted version is not currently provided.*
+*Figure 11. Screenshot of the working FinGuard web demo, showing the security harness overview, measured attack coverage, and layer comparison. The workspace also retains controls for reproducing the financial workflow described in this article. The demo runs locally; a public hosted version is not currently provided.*
 
 The demo lets you follow a transaction from detector scoring to a generated review note, inspect the containment checks, and explore the architecture diagrams. It is intended for research and demonstrations, with simulated banking actions.
 
@@ -186,13 +218,13 @@ The console itself is a trusted host application. It binds to loopback, checks r
 
 ## What this implementation establishes
 
-FinGuard demonstrates how to evaluate complementary security layers and identify which layer stopped an attempted action. In the bounded deterministic experiment, application controls denied seven application-abuse fixtures and OpenShell denied seven direct runtime attacks; together they denied all 14 while allowing all four legitimate controls. The three model-driven continuations illustrate why enforced checks matter, but are not a broad robustness benchmark. Detector accuracy, workflow completion, and security enforcement remain separate measurements.
+FinGuard demonstrates how to evaluate complementary security layers and identify which layer stopped an attempted action. In the bounded deterministic experiment, application controls denied seven application-abuse fixtures and OpenShell denied seven direct runtime attacks; together they denied all 14 while allowing all four legitimate controls. The original three model continuations and the expanded 300-trial study add observations about prohibited proposals, blocking, and workflow completion. They remain bounded evaluations rather than a broad robustness benchmark. Detector accuracy, workflow completion, and security enforcement remain separate measurements.
 
 The scope of the experiment limits the conclusion. Deterministic fixtures are curated, the permissive adapter is a synthetic baseline, and repeated configurations are not independent random attacks. Neither the project nor these results carry an independent security certification.
 
-The agent also needs a broader evaluation of factual accuracy and adversarial behavior. A sandbox cannot guarantee that an allowed note is correct, and nine probes cannot establish resistance to every escape or prompt injection. Production work would additionally require service-side banking authorization, durable case storage, human review, and durable audit delivery.
+The agent still needs broader evaluation across models, transactions, and factual-accuracy criteria. A sandbox cannot guarantee that an allowed note is correct, and nine probes cannot establish resistance to every escape or prompt injection. Production work would additionally require service-side banking authorization, durable case storage, human review, and durable audit delivery.
 
-The next experiments should broaden the attack set, repeat the model-driven trials, and evaluate complete investigations under controlled variations. The current layer comparison establishes a reproducible starting point; wider coverage and independent review are still needed before drawing production conclusions.
+The next experiments should vary models and transactions, improve legitimate workflow recovery, and design longer tasks that naturally expose later attack stages. The 300-trial study deepens the evidence while preserving its limits; wider coverage and independent review are still needed before drawing production conclusions.
 
 ## Get in touch for a demo
 

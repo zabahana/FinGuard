@@ -43,7 +43,7 @@ class ModelError(RuntimeError):
 
 class OllamaClient:
     def __init__(self, model=DEFAULT_MODEL, timeout=180, tools=None,
-                 endpoint="http://127.0.0.1:11434/api/chat"):
+                 endpoint="http://127.0.0.1:11434/api/chat", options=None):
         if not model or len(model) > 200 or "cloud" in model.lower():
             raise ValueError("Choose a local Ollama model, not a cloud model")
         self.model = model
@@ -52,6 +52,9 @@ class OllamaClient:
         if endpoint not in {"http://127.0.0.1:11434/api/chat",
                             "http://host.openshell.internal:11434/api/chat"}:
             raise ValueError("Only local or OpenShell-host inference endpoints are allowed")
+        self.options = {"temperature": 0, "seed": 42, "num_ctx": 8192, "num_predict": 1500}
+        if options:
+            self.options.update(options)
         self.endpoint = endpoint
         # Only local endpoints; do not forward bank context through environment proxies.
         # OpenShell transparently mediates the sandbox's host-bound connections.
@@ -60,7 +63,7 @@ class OllamaClient:
     def chat(self, messages):
         body = {"model": self.model, "messages": messages, "tools": self.tools,
                 "stream": False, "think": False,
-                "options": {"temperature": 0, "seed": 42, "num_ctx": 8192, "num_predict": 1500}}
+                "options": self.options}
         request = Request(self.endpoint,
                           data=json.dumps(body).encode(), headers={"Content-Type": "application/json"})
         try:
@@ -93,6 +96,35 @@ def parse_action(call):
                   customer_id=args["customer_id"], payload=args.get("text", ""))
 
 
+class ToolExecutor:
+    """Shared production tool path; evaluation does not reimplement enforcement."""
+    def __init__(self, runner, required, action_parser):
+        self.runner, self.required, self.action_parser = runner, required, action_parser
+        self.observed = set()
+        self.invalid_calls = 0
+
+    def execute(self, call):
+        name = "invalid_tool"
+        action = None
+        executed = False
+        try:
+            action = self.action_parser(call)
+            name = call["function"]["name"]
+            if name == "submit_case" and not self.required <= self.observed:
+                result = {"decision": "deny", "reason": "Required evidence is missing. Fetch it with tools, then retry.",
+                          "missing_evidence": sorted(self.required - self.observed)}
+            else:
+                decision, value = self.runner.act(action)
+                executed = decision.verdict == Verdict.ALLOW
+                result = {"decision": decision.verdict.value, "reason": decision.reason, "result": value}
+                if executed:
+                    self.observed.add(action.target)
+        except ValueError:
+            self.invalid_calls += 1
+            result = {"decision": "deny", "reason": "Invalid tool name, arguments, or virtual resource"}
+        return name, action, result, executed
+
+
 def investigate_model(mode="adaptive", model=DEFAULT_MODEL, max_steps=12, client=None,
                       *, runner=None, system=SYSTEM, prompt=None, required=None,
                       action_parser=parse_action):
@@ -106,10 +138,10 @@ def investigate_model(mode="adaptive", model=DEFAULT_MODEL, max_steps=12, client
               "customer_id": "C10452", "case": None, "case_persisted": False,
               "model_calls": 0, "tool_calls": 0, "inference_seconds": 0.0,
               "generated_tokens": 0, "invalid_tool_calls": 0}
-    observed = set()
     if required is None:
         required = {"/data/customers/C10452/complaint.txt", "/data/policies/fraud/account-takeover.txt",
                     "/api/transaction-history", "/api/risk-score"}
+    executor = ToolExecutor(runner, required, action_parser)
     for _ in range(max_steps):
         start = time.monotonic()
         try:
@@ -138,29 +170,16 @@ def investigate_model(mode="adaptive", model=DEFAULT_MODEL, max_steps=12, client
         messages.append(message)
         for call in calls:
             report["tool_calls"] += 1
-            name = "invalid_tool"
-            try:
-                action = action_parser(call)
-                name = call["function"]["name"]
-                if name == "submit_case" and not required <= observed:
-                    result = {"decision": "deny", "reason": "Required evidence is missing. Fetch it with tools, then retry.",
-                              "missing_evidence": sorted(required - observed)}
-                else:
-                    decision, value = runner.act(action)
-                    result = {"decision": decision.verdict.value, "reason": decision.reason, "result": value}
-                    if decision.verdict == Verdict.ALLOW:
-                        observed.add(action.target)
-                        if name == "submit_case":
-                            report.update(status="complete", case=value,
-                                          recommendation=("[Sensitive recommendation redacted]"
-                                              if contains_sensitive(action.payload) or re.search(
-                                                  r"\b\d{3}-\d{2}-\d{4}\b", action.payload)
-                                              else action.payload),
-                                          reason="Evidence collected and guarded case submission executed")
-                            return report, runner.events
-            except ValueError:
-                report["invalid_tool_calls"] += 1
-                result = {"decision": "deny", "reason": "Invalid tool name, arguments, or virtual resource"}
+            name, action, result, executed = executor.execute(call)
+            report["invalid_tool_calls"] = executor.invalid_calls
+            if name == "submit_case" and executed:
+                report.update(status="complete", case=result["result"],
+                              recommendation=("[Sensitive recommendation redacted]"
+                                  if contains_sensitive(action.payload) or re.search(
+                                      r"\b\d{3}-\d{2}-\d{4}\b", action.payload)
+                                  else action.payload),
+                              reason="Evidence collected and guarded case submission executed")
+                return report, runner.events
             messages.append({"role": "tool", "tool_name": name, "content": json.dumps(result)})
     else:
         report["reason"] = "Model step limit reached"

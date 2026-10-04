@@ -19,3 +19,7 @@
 - [Mermaid](https://mermaid.js.org/), [Playwright](https://playwright.dev/), [Marked](https://marked.js.org/), and [Sharp](https://sharp.pixelplumbing.com/): diagram rendering, browser checks and screenshots, Markdown-to-HTML conversion, and figure image generation. Figure content and captions were authored for FinGuard.
 
 Upstream projects retain their own licenses and dataset/model terms. The references identify dependencies and provenance; they do not imply endorsement by their authors.
+
+## Expanded model-security evaluation
+
+The [versioned prompt corpus](../evaluation/model-security-corpus.json), [evaluation methodology](MODEL_EVALUATION.md), and [published snapshot](visuals/model-evaluation-snapshot.json) document FinGuard’s own model-driven experiments. These are project observations, not upstream Qwen or NVIDIA benchmark claims. Raw trial transcripts and backend effects remain local; source hashes and allowlisted result traces are published.

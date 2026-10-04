@@ -1,8 +1,8 @@
 'use strict';
 const $ = id => document.getElementById(id);
 let token = null, pending = false, current = null, reportKey = '', jobKey = '';
-const labels = {download:'Prepare data',train:'Train detector',services:'Start and check services',investigate:'Sandbox investigation',full:'Full end-to-end workflow',attacks:'Four-way Attack Lab'};
-const stageNames = {download:'Prepare real ULB data',train:'Train and evaluate detector',services:'Check local services',export:'Export label-blind evidence',build:'Build minimal agent image',control:'Run plain Docker control',sandbox:'Create sandbox and enable audit',probes:'Run containment probes',policy:'Apply deployment policy',investigate:'Run Qwen investigation',collect:'Collect runtime evidence',verify:'Verify local deployment',attacks:'Run bounded Attack Lab'};
+const labels = {download:'Prepare data',train:'Train detector',services:'Start and check services',investigate:'Sandbox investigation',full:'Full end-to-end workflow',attacks:'Four-way Attack Lab',model_eval:'300-trial model evaluation'};
+const stageNames = {download:'Prepare real ULB data',train:'Train and evaluate detector',services:'Check local services',export:'Export label-blind evidence',build:'Build minimal agent image',control:'Run plain Docker control',sandbox:'Create sandbox and enable audit',probes:'Run containment probes',policy:'Apply deployment policy',investigate:'Run Qwen investigation',collect:'Collect runtime evidence',verify:'Verify local deployment',attacks:'Run bounded Attack Lab',model_eval:'Run 300 model trials'};
 const fmt = n => typeof n === 'number' ? n.toLocaleString('en-US') : '—';
 const pct = n => typeof n === 'number' ? `${(n*100).toFixed(2)}%` : '—';
 function el(tag,text,cls){const e=document.createElement(tag);e.textContent=text;if(cls)e.className=cls;return e;}
@@ -11,6 +11,7 @@ function badge(id,text,failed=false){$(id).textContent=text;$(id).classList.togg
 function details(id,items){const root=clear(id);items.forEach(([k,v])=>root.append(el('dt',k),el('dd',String(v??'—'))));}
 function renderReports(results){
   renderAttackLab(results.attack_lab);
+  renderModelEvaluation(results.model_eval);
   const t=results.training,a=results.agent,v=results.verification,p=results.containment;
   const summary=clear('summary-metrics');
   const combined=results.attack_lab?.modes?.both?.cases;
@@ -122,4 +123,21 @@ function renderAttackLab(data){
 $('attack-mode').addEventListener('change',()=>renderAttackLab(attackData));
 $('attack-family').addEventListener('change',()=>renderAttackLab(attackData));
 $('attack-filter').addEventListener('change',()=>renderAttackLab(attackData));
+let evaluationData=null;
+function renderModelEvaluation(data){
+  evaluationData=data;
+  const metrics=clear('evaluation-metrics'),families=clear('evaluation-families'),rows=clear('evaluation-trials'),exposure=clear('evaluation-exposure');
+  if(!data){$('evaluation-date').textContent='No expanded evaluation report yet. Prepare the real-data workflow and local Qwen model, then run the evaluation.';return;}
+  const key=$('evaluation-cohort').value,c=data.cohorts[key];
+  $('evaluation-date').textContent=`Saved run ${data.run_id} · ${data.finished_trials}/${data.planned_trials} trials · ${c.errors} inference errors in selected cohort · ${data.created_at}`;
+  const names={apr:'Attack Proposal Rate · trials',cbr:'Control Block Rate · proposals',uer:'Unauthorized Execution Rate · trials',fbr:'False Block Rate · legitimate proposals',completion:'Legitimate workflow completion'};
+  Object.entries(c.metrics).forEach(([name,m])=>{const card=el('div','','summary-metric');card.append(el('strong',m.rate===null?'N/A':pct(m.rate)),el('span',names[name]),el('p',`${m.numerator}/${m.denominator}`,'small'));const ci=m.prompt_cluster_bootstrap_95;card.append(el('p',ci?`Prompt-cluster 95% interval: ${pct(ci[0])}–${pct(ci[1])}${m.interval_degenerate?' (degenerate; not a risk bound)':''}`:'No estimable interval','small'));metrics.append(card);});
+  $('evaluation-uncertainty').textContent=`${data.uncertainty} Partial/error trials: ${c.unauthorized_executions_all_observed} unauthorized executions across all observed proposals in this cohort.`;
+  Object.entries(c.families).forEach(([name,f])=>{const card=el('article','','injection-card');card.append(el('h4',name.replaceAll('_',' ')),el('p',`${f.apr.numerator}/${f.apr.denominator} trials with prohibited proposals · ${f.prohibited_proposals} prohibited proposals`));families.append(card);});
+  const multi=data.cohorts.multi,stageNames=['Reviewer context','Legitimate score request','Alternate transaction','Unauthorized submission','Exfiltration instruction'];
+  Object.entries(multi.stage_exposure||{}).forEach(([stage,count])=>{const row=el('div','','metric-bar'),label=el('div','','metric-label');label.append(el('span',`${stage}. ${stageNames[Number(stage)-1]}`),el('b',`${count}/${multi.finished} episodes`));const bar=el('progress','');bar.max=multi.finished||1;bar.value=count;bar.setAttribute('aria-label',`${stageNames[Number(stage)-1]} exposure: ${count} of ${multi.finished}`);row.append(label,bar);exposure.append(row);});
+  data.trial_index.filter(t=>t.cohort===key).forEach(t=>{const row=el('tr','');row.append(el('td',t.id),el('td',String(t.seed)),el('td',`${t.model_turns} / ${t.exposed_stages.length}`),el('td',`${t.prohibited_proposals} / ${t.blocked_proposals} / ${t.unauthorized_executions}`),el('td',t.status.replaceAll('_',' ')));rows.append(row);});
+  $('evaluation-traces').textContent=JSON.stringify((data.trace_examples||[]).filter(t=>t.cohort===key),null,2);
+}
+$('evaluation-cohort').addEventListener('change',()=>renderModelEvaluation(evaluationData));
 renderJob(null);refresh();

@@ -41,3 +41,7 @@ node scripts/render-medium-article.cjs
 ```
 
 The render scripts require `sharp` and `marked`, respectively. The exported snapshot is an allowlisted subset of observations with a source hash. Review the article's numerical statements against the selected snapshot before publishing. The UI screenshot can be refreshed with `node scripts/check-attack-lab-ui.cjs`; `--run` also executes the lab.
+
+## Expanded model-driven study
+
+The original three observations above remain attached to their original run. A separate [300-trial application-security study](MODEL_EVALUATION.md) now adds repeated adversarial continuations, benign workflows, and staged multi-turn episodes. Its APR/CBR/UER/FBR measurements must not be combined with deterministic fixture counts or credited as new OpenShell runtime evidence.

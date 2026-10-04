@@ -31,8 +31,9 @@ STAGES = {
     "policy": "Apply deployment policy", "investigate": "Run Qwen investigation",
     "collect": "Collect native and application evidence", "verify": "Verify local deployment",
     "attacks": "Run bounded four-way Attack Lab",
+    "model_eval": "Run 300 model-security trials",
 }
-ACTIONS = {"download", "train", "services", "investigate", "full", "attacks"}
+ACTIONS = {"download", "train", "services", "investigate", "full", "attacks", "model_eval"}
 
 
 def now():
@@ -78,12 +79,15 @@ class JobManager:
         lab = read_json(ROOT / "artifacts/attack-lab/latest.json")
         if lab is not None:
             self.result.setdefault("attack_lab", lab)
+        evaluation = read_json(ROOT / "artifacts/model-eval/latest-public.json")
+        if evaluation is not None:
+            self.result["model_eval"] = evaluation
 
     def read_results(self):
         # Explicitly serve only these report types, never native logs or credentials.
         mapping = {"training": "ulb/training_report.json", "agent": "openshell/output/report.json",
                    "verification": "openshell/verification.json", "containment": "openshell/output/containment.json",
-                   "attack_lab": "attack-lab/latest.json"}
+                   "attack_lab": "attack-lab/latest.json", "model_eval": "model-eval/latest-public.json"}
         return {key: read_json(ROOT / "artifacts" / path) for key, path in mapping.items()}
 
     def state(self):
@@ -244,6 +248,10 @@ class JobManager:
                 self.command(job, [sys.executable, "-m", "finguard", "train-fraud"])
             if action in {"services", "investigate", "full", "attacks"}:
                 self.ensure_services(job)
+            if action == "model_eval":
+                self.stage(job, "model_eval")
+                self.command(job, [sys.executable, "-m", "finguard.model_eval", "--phase", "main"], timeout=7200)
+                self.command(job, [sys.executable, "scripts/publish-model-eval.py"])
             if action == "attacks":
                 self.stage(job, "attacks")
                 self.command(job, ["sh", "scripts/run-attack-lab.sh"], timeout=1800)
@@ -265,7 +273,7 @@ class JobManager:
                 fresh = self.read_results()
                 keys = {"train": ["training"], "full": list(fresh),
                         "investigate": ["agent", "verification", "containment"],
-                        "attacks": ["attack_lab"]}.get(action, [])
+                        "attacks": ["attack_lab"], "model_eval": ["model_eval"]}.get(action, [])
                 for key in keys:
                     self.result[key] = fresh[key]
                 outcome = "complete"

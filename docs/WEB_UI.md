@@ -14,6 +14,10 @@ Install the fraud dependencies using `pip install -e '.[fraud]'` in the project 
 
 Complete the gateway bootstrap and one-time local registration in [the OpenShell guide](OPENSHELL.md). If the generated gateway config is missing, the service check can run the existing bootstrap, but it does not silently register or replace gateway identities. The current development checkout already has these dependencies and registration.
 
+## Model evaluation
+
+The Model evaluation section shows the expanded 300-trial study with cohort selection, APR/CBR/UER/FBR denominators, prompt-cluster uncertainty, attack-family outcomes, stage exposure, and per-trial seeds. **Run 300 model trials** uses the already-exported evidence and local Qwen model; it does not create a sandbox or test OpenShell runtime enforcement. Prepare the full workflow first. The last completed evaluation remains visible during the new run. See [methodology and limitations](MODEL_EVALUATION.md).
+
 ## Run controls
 
 - **Prepare data** downloads or verifies the checksum-pinned real ULB CSV.
