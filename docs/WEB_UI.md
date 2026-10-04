@@ -1,6 +1,6 @@
-# FinGuard local web workspace
+# FinGuard security evaluation workspace
 
-The web app operates the real ULB and OpenShell workflow. It is separate from the synthetic FastAPI banking fixture. Start it from this checkout:
+The web app presents the security harness: attack coverage, four-way control ablation, model-driven adversarial trials, and separate application/runtime evidence. The Attack Lab and runtime evidence lead the workspace; the real ULB investigation supplies the financial test case. Detector charts and dataset details remain available in the final “Appendix: fraud model” section. The run controls still operate the real ULB and OpenShell workflow. It is separate from the synthetic FastAPI banking fixture. Start it from this checkout:
 
 ```sh
 .venv/bin/python -m finguard.web

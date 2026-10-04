@@ -1,6 +1,8 @@
 # FinGuard
 
-An agentic banking security research testbed based on `FinGuard.docx`.
+An experimental security harness for evaluating layered controls around tool-using financial AI agents. FinGuard separates application authorization from runtime capability enforcement and tests both through deterministic attacks, control ablation, model-driven adversarial instructions, and independently observable audit evidence.
+
+The real-data fraud investigation is the financial test case used to exercise the architecture. Start with the [Attack Lab methodology and results](docs/ATTACK_LAB.md); detector development and performance are supporting context in [the article appendix](docs/MEDIUM_ARTICLE.md#appendix-a).
 
 Research question: **Can context-aware policies improve financial-agent security beyond static runtime containment?** FinGuard distinguishes enforcement failures from semantic policy failures, where permitted actions violate the intended use of banking data.
 

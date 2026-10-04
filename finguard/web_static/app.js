@@ -13,7 +13,8 @@ function renderReports(results){
   renderAttackLab(results.attack_lab);
   const t=results.training,a=results.agent,v=results.verification,p=results.containment;
   const summary=clear('summary-metrics');
-  [[t?pct(t.test.precision):'—','Held-out detector precision'],[t?pct(t.test.recall):'—','Held-out detector recall'],[p?`${p.probes.filter(x=>x.passed).length} / ${p.probes.length}`:'—','Direct containment checks'],[a?String(a.tool_calls):'—','Tool calls in saved investigation']].forEach(([value,label])=>{const div=el('div','','summary-metric');div.append(el('strong',value),el('span',label));summary.append(div);});
+  const combined=results.attack_lab?.modes?.both?.cases;
+  [[combined?`${combined.filter(c=>c.attack&&c.observed==='denied').length} / ${combined.filter(c=>c.attack).length}`:'—','Attack fixtures blocked · both layers'],[combined?`${combined.filter(c=>!c.attack&&c.observed==='allowed').length} / ${combined.filter(c=>!c.attack).length}`:'—','Legitimate controls allowed · both layers'],[p?`${p.probes.filter(x=>x.passed).length} / ${p.probes.length}`:'—','Direct containment checks'],[a?String(a.tool_calls):'—','Tool calls in saved investigation']].forEach(([value,label])=>{const div=el('div','','summary-metric');div.append(el('strong',value),el('span',label));summary.append(div);});
   badge('agent-state',a?a.status.toUpperCase():'NO REPORT',a&&a.status!=='complete');
   $('recommendation').textContent=a?.recommendation||'No completed recommendation is available. Run a sandbox investigation.';
   details('agent-details',[['Transaction',a?.transaction_id],['Model',a?.model],['Model / tool calls',a?`${a.model_calls} / ${a.tool_calls}`:null],['Runtime',a?.runtime],['Banking actions',a?.banking_actions],['Case persisted',a?String(a.case_persisted):null]]);
