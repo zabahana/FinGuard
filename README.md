@@ -8,9 +8,13 @@ Research question: **Can context-aware policies improve financial-agent security
 
 For data, model, runtime, and documentation-tool provenance, see [Sources and references](docs/REFERENCES.md).
 
-## Model-driven evaluation
+## Two complementary studies
 
-The [expanded model-security study](docs/MODEL_EVALUATION.md) evaluates 200 adversarial continuations, 50 benign workflows, and 50 multi-turn episodes. It separates prohibited proposals, control blocking, unauthorized backend execution, false blocks, and legitimate workflow completion. The [versioned corpus](evaluation/model-security-corpus.json) and [recorded results](docs/visuals/model-evaluation-snapshot.json) accompany the implementation. These application-control tests run on the trusted host; OpenShell containment evidence remains a separate experiment.
+**Study 1: Control-Layer Ablation** tests 14 deterministic attacks and four positive controls across four configurations (72 outcomes). **Study 2: Model-Driven Adversarial Evaluation** measures model proposals and their enforcement outcomes; these counts are not pooled.
+
+### Model-driven evaluation
+
+The [expanded model-security study](docs/MODEL_EVALUATION.md) evaluates 200 adversarial continuations, 50 benign workflows, and 50 multi-turn episodes. It separates prohibited proposals, control blocking, unauthorized backend execution, false blocks, legitimate workflow completion, and recovery after a block. The saved benign traces show 34/50 completed workflows, 0/133 false blocks, and 1/17 recovery after a block (5.9%); security and reliability are separate measurements. The [versioned corpus](evaluation/model-security-corpus.json) and [recorded results](docs/visuals/model-evaluation-snapshot.json) accompany the implementation. These application-control tests run on the trusted host; OpenShell containment evidence remains a separate experiment.
 
 ## Current implementation
 

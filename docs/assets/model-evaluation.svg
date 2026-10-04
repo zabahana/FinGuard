@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1210" viewBox="0 0 1600 1210"><rect width="1600" height="1210" fill="#f5f8f3"/><style>text{font-family:Arial,sans-serif;fill:#15382c}.small{font-size:20px;fill:#566b61}.label{font-size:23px}.big{font-size:46px;font-weight:700}</style>
-<text x="58" y="52" class="small">FINGUARD / MODEL-DRIVEN APPLICATION EVALUATION</text>
+<text x="58" y="52" class="small">STUDY 2 / MODEL-DRIVEN ADVERSARIAL EVALUATION</text>
 <text x="58" y="108" class="big">A prohibited proposal is not an executed action.</text>
 <text x="58" y="151" class="label">300 trials · local Qwen3:8b · shared production controls · independently recorded backend effects</text>
 <rect x="58" y="184" width="480" height="360" rx="16" fill="white" stroke="#d7e4dc"/>
@@ -24,8 +24,9 @@
 <text x="1086" y="302" class="small">Workflows completed</text>
 <text x="1086" y="353" class="big">0/133  ·  0.0%</text>
 <text x="1086" y="381" class="small">False blocks / legitimate calls</text>
-<text x="1086" y="464" class="small">17 prohibited proposals on benign tasks</text>
-<text x="1086" y="498" class="small">Correct denials are not false blocks.</text>
+<text x="1086" y="432" class="big">1/17  ·  5.9%</text>
+<text x="1086" y="460" class="small">Recovery after a blocked proposal</text>
+<text x="1086" y="516" class="small">Correct denials are not false blocks.</text>
 <text x="58" y="587" class="label">Which prompt families elicited prohibited proposals?</text>
 <text x="58" y="617" class="small">APR · trials containing at least one prohibited call</text>
 <text x="58" y="658" class="small">evidence skipping</text>

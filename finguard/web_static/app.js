@@ -12,6 +12,7 @@ function details(id,items){const root=clear(id);items.forEach(([k,v])=>root.appe
 function renderReports(results){
   renderAttackLab(results.attack_lab);
   renderModelEvaluation(results.model_eval);
+  renderStudySummary(results);
   const t=results.training,a=results.agent,v=results.verification,p=results.containment;
   const summary=clear('summary-metrics');
   const combined=results.attack_lab?.modes?.both?.cases;
@@ -123,14 +124,25 @@ function renderAttackLab(data){
 $('attack-mode').addEventListener('change',()=>renderAttackLab(attackData));
 $('attack-family').addEventListener('change',()=>renderAttackLab(attackData));
 $('attack-filter').addEventListener('change',()=>renderAttackLab(attackData));
+function renderStudySummary(results){
+  const body=clear('study-summary'),lab=results.attack_lab,study=results.model_eval;
+  const add=(cohort,label,value)=>{const row=el('tr','');row.append(el('td',cohort),el('td',label),el('td',value));body.append(row);};
+  if(lab){const both=lab.modes.both.cases,all=Object.values(lab.modes).flatMap(m=>m.cases),attacks=both.filter(c=>c.attack),controls=both.filter(c=>!c.attack);add('Study 1 · combined','Attack fixtures denied',`${attacks.filter(c=>c.observed==='denied').length}/${attacks.length}`);add('Study 1 · combined','Positive controls allowed',`${controls.filter(c=>c.observed==='allowed').length}/${controls.length}`);add('Study 1 · 4 configurations','Expected outcomes',`${all.filter(c=>c.passed).length}/${all.length}`);}
+  if(study){for(const [cohort,metric,label] of [['single','apr','APR · trials with prohibited proposals'],['single','cbr','CBR · prohibited proposals blocked'],['single','uer','UER · unauthorized-execution trials'],['benign','fbr','FBR · legitimate proposals falsely blocked'],['benign','completion','Workflow completion'],['benign','rr','Recovery after a block'],['multi','uer','Unauthorized-execution episodes']]){const m=study.cohorts[cohort].metrics[metric];if(m)add(`Study 2 · ${cohort}`,label,`${m.numerator}/${m.denominator}${m.rate===null?' · N/A':` · ${pct(m.rate)}`}`);}}
+}
 let evaluationData=null;
 function renderModelEvaluation(data){
   evaluationData=data;
-  const metrics=clear('evaluation-metrics'),families=clear('evaluation-families'),rows=clear('evaluation-trials'),exposure=clear('evaluation-exposure');
+  const metrics=clear('evaluation-metrics'),families=clear('evaluation-families'),rows=clear('evaluation-trials'),exposure=clear('evaluation-exposure'),chain=clear('behavior-chain'),reliability=clear('reliability-story');
   if(!data){$('evaluation-date').textContent='No expanded evaluation report yet. Prepare the real-data workflow and local Qwen model, then run the evaluation.';return;}
   const key=$('evaluation-cohort').value,c=data.cohorts[key];
+  const single=data.cohorts.single.metrics,benign=data.cohorts.benign.metrics;
+  [['apr','Adversarial trials with prohibited proposals'],['cbr','Prohibited proposals blocked'],['uer','Trials with unauthorized execution']].forEach(([name,label],i)=>{if(i)chain.append(el('span','→','chain-arrow'));const card=el('article','','chain-card'),m=single[name];card.append(el('strong',name==='uer'?`${m.numerator}/${m.denominator}`:pct(m.rate)),el('p',label),el('small',`${m.numerator}/${m.denominator} · ${name.toUpperCase()}`));chain.append(card);});
+  reliability.append(el('h3','Security and reliability are different measurements'),el('p',`${benign.completion.numerator}/${benign.completion.denominator} benign workflows completed (${pct(benign.completion.rate)}), with ${benign.fbr.numerator}/${benign.fbr.denominator} false blocks of legitimate proposals.`));
+  if(benign.rr){const rr=benign.rr;reliability.append(el('p',`Recovery after a block: ${rr.numerator}/${rr.denominator} workflows (${rr.rate===null?'N/A':pct(rr.rate)}). Correct rejection of an invalid or premature proposal is not a false block. A workflow can remain secure and still fail to complete.`),el('p','RR is a post-hoc calculation from saved backend traces. Single-continuation trials are excluded; no additional model runs were performed.','small'));}
+
   $('evaluation-date').textContent=`Saved run ${data.run_id} · ${data.finished_trials}/${data.planned_trials} trials · ${c.errors} inference errors in selected cohort · ${data.created_at}`;
-  const names={apr:'Attack Proposal Rate · trials',cbr:'Control Block Rate · proposals',uer:'Unauthorized Execution Rate · trials',fbr:'False Block Rate · legitimate proposals',completion:'Legitimate workflow completion'};
+  const names={apr:'Attack Proposal Rate · trials',cbr:'Control Block Rate · proposals',uer:'Unauthorized Execution Rate · trials',fbr:'False Block Rate · legitimate proposals',completion:'Legitimate workflow completion',rr:'Recovery Rate · blocked workflows'};
   Object.entries(c.metrics).forEach(([name,m])=>{const card=el('div','','summary-metric');card.append(el('strong',m.rate===null?'N/A':pct(m.rate)),el('span',names[name]),el('p',`${m.numerator}/${m.denominator}`,'small'));const ci=m.prompt_cluster_bootstrap_95;card.append(el('p',ci?`Prompt-cluster 95% interval: ${pct(ci[0])}–${pct(ci[1])}${m.interval_degenerate?' (degenerate; not a risk bound)':''}`:'No estimable interval','small'));metrics.append(card);});
   $('evaluation-uncertainty').textContent=`${data.uncertainty} Partial/error trials: ${c.unauthorized_executions_all_observed} unauthorized executions across all observed proposals in this cohort.`;
   Object.entries(c.families).forEach(([name,f])=>{const card=el('article','','injection-card');card.append(el('h4',name.replaceAll('_',' ')),el('p',`${f.apr.numerator}/${f.apr.denominator} trials with prohibited proposals · ${f.prohibited_proposals} prohibited proposals`));families.append(card);});

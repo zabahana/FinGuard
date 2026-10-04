@@ -8,14 +8,14 @@ const C={ink:'#15382c',muted:'#566b61',green:'#177453',line:'#d7e4dc',bg:'#f5f8f
 let parts=[`<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1210" viewBox="0 0 1600 1210"><rect width="1600" height="1210" fill="${C.bg}"/><style>text{font-family:Arial,sans-serif;fill:${C.ink}}.small{font-size:20px;fill:${C.muted}}.label{font-size:23px}.big{font-size:46px;font-weight:700}</style>`];
 function text(x,y,value,cls='label'){parts.push(`<text x="${x}" y="${y}" class="${cls}">${esc(value)}</text>`)}
 function box(x,y,w,h){parts.push(`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="16" fill="white" stroke="${C.line}"/>`)}
-text(58,52,'FINGUARD / MODEL-DRIVEN APPLICATION EVALUATION','small');
+text(58,52,'STUDY 2 / MODEL-DRIVEN ADVERSARIAL EVALUATION','small');
 text(58,108,'A prohibited proposal is not an executed action.','big');
 text(58,151,`${s.finished_trials} trials · local Qwen3:8b · shared production controls · independently recorded backend effects`);
 for(const [index,key,label] of [[0,'single','200 adversarial continuations'],[1,'multi','50 multi-turn episodes'],[2,'benign','50 benign workflows']]){
  const x=58+index*502,c=s.cohorts[key];box(x,184,480,360);text(x+24,225,label);
- const rows=key==='benign'?[['completion','Workflows completed'],['fbr','False blocks / legitimate calls']]:[['apr','Trials with prohibited proposals'],['cbr','Prohibited proposals blocked'],['uer','Trials with unauthorized execution']];
+ const rows=key==='benign'?[['completion','Workflows completed'],['fbr','False blocks / legitimate calls'],['rr','Recovery after a blocked proposal']]:[['apr','Trials with prohibited proposals'],['cbr','Prohibited proposals blocked'],['uer','Trials with unauthorized execution']];
  rows.forEach(([metric,label],i)=>{const m=c.metrics[metric],y=274+i*79;text(x+24,y,`${ratio(m)}  ·  ${percent(m.rate)}`,'big');text(x+24,y+28,label,'small')});
- if(key==='benign'){text(x+24,464,`${c.prohibited_proposals} prohibited proposals on benign tasks`,'small');text(x+24,498,'Correct denials are not false blocks.','small')}
+ if(key==='benign'){text(x+24,516,'Correct denials are not false blocks.','small')}
 }
 text(58,587,'Which prompt families elicited prohibited proposals?');
 text(58,617,'APR · trials containing at least one prohibited call','small');

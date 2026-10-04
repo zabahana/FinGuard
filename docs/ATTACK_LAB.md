@@ -1,4 +1,4 @@
-# Bounded adversarial evaluation
+# Study 1: Control-Layer Ablation
 
 Run the **Attack Lab** from the local web UI, or from the repository root:
 

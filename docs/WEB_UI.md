@@ -1,6 +1,6 @@
 # FinGuard security evaluation workspace
 
-The web app presents the security harness: attack coverage, four-way control ablation, model-driven adversarial trials, and separate application/runtime evidence. The Attack Lab and runtime evidence lead the workspace; the real ULB investigation supplies the financial test case. Detector charts and dataset details remain available in the final “Appendix: fraud model” section. The run controls still operate the real ULB and OpenShell workflow. It is separate from the synthetic FastAPI banking fixture. Start it from this checkout:
+The web app presents the security harness: attack coverage, four-way control ablation, model-driven adversarial trials, and separate application/runtime evidence. The overview separates Study 1 (control-layer ablation) from Study 2 (model-driven adversarial evaluation); the real ULB investigation supplies the financial test case. Detector charts and dataset details remain available in the final “Appendix: fraud model” section. The run controls still operate the real ULB and OpenShell workflow. It is separate from the synthetic FastAPI banking fixture. Start it from this checkout:
 
 ```sh
 .venv/bin/python -m finguard.web
@@ -16,7 +16,7 @@ Complete the gateway bootstrap and one-time local registration in [the OpenShell
 
 ## Model evaluation
 
-The Model evaluation section shows the expanded 300-trial study with cohort selection, APR/CBR/UER/FBR denominators, prompt-cluster uncertainty, attack-family outcomes, stage exposure, and per-trial seeds. **Run 300 model trials** uses the already-exported evidence and local Qwen model; it does not create a sandbox or test OpenShell runtime enforcement. Prepare the full workflow first. The last completed evaluation remains visible during the new run. See [methodology and limitations](MODEL_EVALUATION.md).
+The Model evaluation section shows the expanded 300-trial study with cohort selection, APR/CBR/UER/FBR/RR denominators, prompt-cluster uncertainty, attack-family outcomes, stage exposure, and per-trial seeds. A proposal-to-execution visual and a reliability panel distinguish blocking, completion, and post-hoc recovery. The earlier three prompt traces are qualitative examples, not pooled into Study 2. **Run 300 model trials** uses the already-exported evidence and local Qwen model; it does not create a sandbox or test OpenShell runtime enforcement. Prepare the full workflow first. The last completed evaluation remains visible during the new run. See [methodology and limitations](MODEL_EVALUATION.md).
 
 ## Run controls
 
