@@ -30,8 +30,9 @@ STAGES = {
     "sandbox": "Create sandbox and enable audit", "probes": "Run containment probes",
     "policy": "Apply deployment policy", "investigate": "Run Qwen investigation",
     "collect": "Collect native and application evidence", "verify": "Verify local deployment",
+    "attacks": "Run bounded four-way Attack Lab",
 }
-ACTIONS = {"download", "train", "services", "investigate", "full"}
+ACTIONS = {"download", "train", "services", "investigate", "full", "attacks"}
 
 
 def now():
@@ -74,11 +75,15 @@ class JobManager:
         self.children = []
         # Keep the last published snapshot across restarts, including failed jobs.
         self.result = read_json(ROOT / "artifacts/web/published-results.json") or self.read_results()
+        lab = read_json(ROOT / "artifacts/attack-lab/latest.json")
+        if lab is not None:
+            self.result.setdefault("attack_lab", lab)
 
     def read_results(self):
         # Explicitly serve only these report types, never native logs or credentials.
         mapping = {"training": "ulb/training_report.json", "agent": "openshell/output/report.json",
-                   "verification": "openshell/verification.json", "containment": "openshell/output/containment.json"}
+                   "verification": "openshell/verification.json", "containment": "openshell/output/containment.json",
+                   "attack_lab": "attack-lab/latest.json"}
         return {key: read_json(ROOT / "artifacts" / path) for key, path in mapping.items()}
 
     def state(self):
@@ -237,8 +242,11 @@ class JobManager:
             if action in {"train", "full"}:
                 self.stage(job, "train")
                 self.command(job, [sys.executable, "-m", "finguard", "train-fraud"])
-            if action in {"services", "investigate", "full"}:
+            if action in {"services", "investigate", "full", "attacks"}:
                 self.ensure_services(job)
+            if action == "attacks":
+                self.stage(job, "attacks")
+                self.command(job, ["sh", "scripts/run-attack-lab.sh"], timeout=1800)
             if action == "full":
                 job["sandbox"] = sandbox_name()
                 receiver = self.receiver(job)
@@ -256,7 +264,8 @@ class JobManager:
                 # run's agent report with the previous successful verification in the UI.
                 fresh = self.read_results()
                 keys = {"train": ["training"], "full": list(fresh),
-                        "investigate": ["agent", "verification", "containment"]}.get(action, [])
+                        "investigate": ["agent", "verification", "containment"],
+                        "attacks": ["attack_lab"]}.get(action, [])
                 for key in keys:
                     self.result[key] = fresh[key]
                 outcome = "complete"

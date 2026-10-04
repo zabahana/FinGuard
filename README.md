@@ -4,6 +4,8 @@ An agentic banking security research testbed based on `FinGuard.docx`.
 
 Research question: **Can context-aware policies improve financial-agent security beyond static runtime containment?** FinGuard distinguishes enforcement failures from semantic policy failures, where permitted actions violate the intended use of banking data.
 
+For data, model, runtime, and documentation-tool provenance, see [Sources and references](docs/REFERENCES.md).
+
 ## Current implementation
 
 Explore the [interactive visual guide](docs/visual-guide.html), [Mermaid component and process diagrams](docs/ARCHITECTURE.md), and [Medium article draft](docs/MEDIUM_ARTICLE.md). The visual guide works offline and separates detector metrics, agent outcomes, and runtime verification. See [visual documentation maintenance](docs/VISUALS.md) to refresh its snapshot or export diagrams.
@@ -83,6 +85,10 @@ Interactive endpoint documentation is at `http://127.0.0.1:8000/docs`. The servi
 - `docs/RESEARCH_PLAN.md`: requirements, experimental design and remaining milestones.
 - `docs/OPENSHELL.md`: real-environment integration requirements.
 - `docs/.github/workflows/test.yml`: GitHub Actions template. CI is not enabled yet; move this file to `.github/workflows/test.yml` at the repository root and push with a credential that has workflow permission to enable it.
+
+## Attack Lab
+
+The local web UI includes a runnable [Attack Lab](docs/ATTACK_LAB.md): bounded application-abuse and runtime fixtures across four control configurations, plus separate Qwen prompt-injection continuations. Inspect attempts, decisions, and native network evidence without conflating model compliance with runtime enforcement.
 
 ## Interpreting results
 

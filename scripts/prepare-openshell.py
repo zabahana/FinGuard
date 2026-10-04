@@ -12,7 +12,7 @@ bank = load_bank(root / 'artifacts/ulb')
 build = root / '.local/openshell/build'
 (build / 'finguard').mkdir(parents=True, exist_ok=True)
 (build / 'evidence').mkdir(exist_ok=True)
-for name in ['__init__', 'llm', 'ulb', 'runner', 'models', 'policy', 'bank', 'contained', 'containment_probes']:
+for name in ['__init__', 'llm', 'ulb', 'runner', 'models', 'policy', 'bank', 'contained', 'containment_probes', 'attack_lab']:
     shutil.copyfile(root / 'finguard' / f'{name}.py', build / 'finguard' / f'{name}.py')
 (build / 'evidence/transaction.json').write_text(json.dumps({'row': bank.row, 'score': bank.score, 'threshold': bank.threshold}, indent=2)+'\n')
 (build / 'evidence/policy.txt').write_text(POLICY)

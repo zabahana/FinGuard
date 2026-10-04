@@ -8,6 +8,7 @@ from urllib.request import Request, ProxyHandler, build_opener
 
 
 def filesystem_probe(name, path, operation, expected):
+    detail = ""
     try:
         if operation == "read":
             Path(path).read_bytes()
@@ -18,8 +19,9 @@ def filesystem_probe(name, path, operation, expected):
         result = "allowed"
     except OSError as exc:
         result = "denied" if exc.errno in (errno.EACCES, errno.EPERM, errno.EROFS) else "inconclusive"
+        detail = f"{type(exc).__name__}: errno={exc.errno}"
     return {"name": name, "operation": operation, "path": path, "observed": result,
-            "expected": expected, "passed": result == expected}
+            "expected": expected, "passed": result == expected, "detail": detail}
 
 
 def network_probe(name, port, path, method, expected):

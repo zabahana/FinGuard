@@ -39,3 +39,7 @@ The architecture tab offers four Mermaid-rendered diagrams with downloadable SVG
 This is a trusted local operator tool, not a remotely authenticated service. Job requests accept only named actions, not arbitrary commands or paths. Mutating requests require a per-server token and same-origin checks; Host validation also blocks unrelated hostnames. No cross-origin API access is enabled. Do not expose the port through a tunnel or reverse proxy.
 
 The UI and pipeline controller run on the trusted Mac. Only the contained investigation runs inside OpenShell. Banking actions remain simulated. A passing verification gate covers the recorded checks, not universal agent safety.
+
+## Attack Lab
+
+The **Run Attack Lab** control runs 18 deterministic fixtures in four configurations and three separate Qwen continuations. Mode selection, attack/control filters, and trace inspection show actual saved evidence. Results are separate from the investigation workflow. See [Attack Lab methodology](ATTACK_LAB.md) for baseline qualifications, evidence attribution, and runtime cleanup.

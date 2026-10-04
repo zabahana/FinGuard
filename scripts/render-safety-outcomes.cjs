@@ -48,7 +48,7 @@ ${t(76,833,'Application evidence + independent runtime observations + native aud
 ${t(76,875,`${checks} / ${Object.keys(s.verification.checks).length} integration checks passed`,26,'#ffffff',700)}
 ${t(640,875,'Local software deployment · banking actions simulated',18,'#e0eee4')}
 ${t(48,958,'Takeaway: make useful agent work observable and constrain its execution.',25,'#163425',600)}
-${t(48,1000,'No certification, general prompt-injection guarantee, or measured safety uplift versus a baseline.',20,'#617168')}
+${t(48,1000,'No certification, general prompt-injection guarantee, or population-level safety estimate.',20,'#617168')}
 ${t(48,1034,'The 14 checks combine evidence above; they are not 14 additional independent attack tests.',19,'#617168')}
 ${t(48,1075,`Source: saved FinGuard reports · verified ${s.verified_at} · OpenShell 0.1.2`,16,'#617168')}
 </g></svg>`;

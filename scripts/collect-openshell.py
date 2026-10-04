@@ -5,7 +5,7 @@ import subprocess
 import sys
 
 name = sys.argv[1] if len(sys.argv) > 1 else 'finguard-ulb'
-root = Path('artifacts/openshell')
+root = Path(sys.argv[2] if len(sys.argv) > 2 else 'artifacts/openshell')
 root.mkdir(parents=True, exist_ok=True)
 def run(*args):
     return subprocess.check_output(args, text=True)
