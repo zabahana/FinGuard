@@ -83,6 +83,8 @@ Filesystem cases cite actual OS error results, with the plain Docker baselines s
 
 The lab retains a controlled health permission for its positive network control; it is distinct from the narrower deployment policy used for the main investigation. Its timestamped artifacts preserve this scope rather than presenting the lab as a production security certification.
 
+The [Attack Lab methodology](https://github.com/zabahana/FinGuard/blob/main/docs/ATTACK_LAB.md), [saved investigation snapshot](https://github.com/zabahana/FinGuard/blob/main/docs/visuals/snapshot.json), and [Attack Lab snapshot](https://github.com/zabahana/FinGuard/blob/main/docs/visuals/attack-lab-snapshot.json) document the experiments behind these figures. These are local experiment results, not NVIDIA benchmark results; full runtime logs remain local.
+
 ## Architecture: authorization inside, capability enforcement outside
 
 FinGuard validates application actions while OpenShell constrains the agent process. The classifier and language model support the financial test case with different jobs.
@@ -243,11 +245,5 @@ The dataset spans only two days in 2013, has no customer identifiers for custome
 - [NVIDIA OpenShell 0.1.2 source and release](https://github.com/NVIDIA/OpenShell/releases/tag/v0.1.2): the pinned software runtime used by this implementation. The [NVIDIA platform announcement](https://nvidianews.nvidia.com/news/open-agent-safety-platform) supplies the broader Open Agent Safety Platform context; Sentry hardware is not part of this demo.
 - [Ollama source code](https://github.com/ollama/ollama): the local inference server. [Docker Desktop documentation](https://docs.docker.com/desktop/): the container environment on the development Mac.
 - [Open Cybersecurity Schema Framework](https://ocsf.io/): the schema framework used by the native security event export. OCSF is an event schema, not a certification of FinGuard or its security claims.
-
-### Project code and publication tooling
-
-- [FinGuard implementation](https://github.com/zabahana/FinGuard/tree/main/finguard), [OpenShell policies](https://github.com/zabahana/FinGuard/tree/main/integration/openshell), and [Attack Lab methodology](https://github.com/zabahana/FinGuard/blob/main/docs/ATTACK_LAB.md): the application controls, bounded adversarial harness, configuration, and experimental qualifications developed for this project.
-- [Saved investigation snapshot](https://github.com/zabahana/FinGuard/blob/main/docs/visuals/snapshot.json) and [Attack Lab snapshot](https://github.com/zabahana/FinGuard/blob/main/docs/visuals/attack-lab-snapshot.json): the exported observations and source hashes behind the figures. These are local experiment results, not NVIDIA benchmark results or independent certification reports. Full runtime logs remain local and are not committed.
-- [Mermaid](https://mermaid.js.org/), [Playwright](https://playwright.dev/), [Marked](https://marked.js.org/), and [Sharp](https://sharp.pixelplumbing.com/): diagram rendering, browser checks and screenshots, Markdown-to-HTML conversion, and figure image generation. Figure content and captions were authored for FinGuard.
 
 Upstream projects retain their own licenses and dataset/model terms. The references identify dependencies and provenance; they do not imply endorsement by their authors.
