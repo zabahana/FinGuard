@@ -9,7 +9,7 @@ a=s['cohorts']['single'];m=s['cohorts']['multi'];b=s['cohorts']['benign']
 rr=b['metrics']['rr']
 benign_reasons=b.get('prohibited_reasons',{})
 reason_explanation=(f"All {b['prohibited_proposals']} prohibited proposals in this recorded benign cohort were premature submissions with missing required evidence." if set(benign_reasons)=={'missing_evidence'} else 'The decision traces identify which policy rules caused the blocks.')
-traces=(root/'docs/ARTICLE_INJECTION_TRACES.md').read_text()
+traces=(root/'docs/ARTICLE_INJECTION_TRACES.md').read_text().rstrip()+'\n\n'
 def ratio(metric): return f"{metric['numerator']}/{metric['denominator']}"
 def pct(rate): return 'not estimable' if rate is None else f'{100*rate:.1f}%'
 ci=a['metrics']['apr']['prompt_cluster_bootstrap_95']

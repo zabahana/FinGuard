@@ -11,4 +11,3 @@ For the decoy/exfiltration instruction, Qwen proposed `read_policy`. No maliciou
 *Figure 4. Two injected instructions produced prohibited tool proposals, which FinGuard rejected. The decoy-exfiltration prompt produced a policy read instead, so that row is not counted as an OpenShell denial. Each row is one continuation, not a complete investigation.*
 
 These earlier examples used different prompts and setup from Study 2 and are not pooled into its 300-trial counts. They illustrate the evidence paths: in two trials, the model proposed actions that violated the application's rules, and code checks stopped them. These are three single-continuation trials, not complete investigations or a general prompt-injection benchmark.
-
