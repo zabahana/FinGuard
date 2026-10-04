@@ -8,6 +8,10 @@ Research question: **Can context-aware policies improve financial-agent security
 
 For data, model, runtime, and documentation-tool provenance, see [Sources and references](docs/REFERENCES.md).
 
+## Read the article
+
+[FinGuard: What Happens When a Financial AI Agent Ignores the Rules?](https://zabahana.github.io/FinGuard/) is the public article with all seven figures. For Medium, use **Stories → Import a story** with that URL, then review the imported images and captions. See [Pages publication maintenance](docs/GITHUB_PAGES.md).
+
 ## Two complementary studies
 
 **Study 1: Control-Layer Ablation** tests 14 deterministic attacks and four positive controls across four configurations (72 outcomes). **Study 2: Model-Driven Adversarial Evaluation** measures model proposals and their enforcement outcomes; these counts are not pooled.
